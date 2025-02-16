@@ -1,0 +1,19 @@
+{
+    "name": "reset-api-app",
+    "version": "1.0.0",
+    "description": "Aplikasi reset API dengan GitHub sebagai database",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "axios": "^1.7.9",
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^16.0.3",
+        "express": "^4.21.2",
+        "fs-extra": "^11.1.1",
+        "jsonwebtoken": "^9.0.0",
+        "node-fetch": "^3.3.1",
+        "path": "^0.12.7"
+    }
+}
