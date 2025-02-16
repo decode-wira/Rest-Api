@@ -5,19 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset API - Selamat Datang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-            transition: all 0.3s ease-in-out;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            background-color: #ffffff;
-            color: #333;
-            text-align: center;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s, opacity 0.3s;
         }
 
         /* HEADER */
@@ -25,184 +46,320 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 40px;
-            background: white;
+            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             position: fixed;
             top: 0;
             width: 100%;
-            height: 60px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .logo {
             font-size: 1.8rem;
-            font-weight: bold;
-            color: #007BFF;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 1.5rem;
         }
 
         .nav a {
-            color: #333;
+            color: var(--dark);
             text-decoration: none;
-            font-size: 1rem;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
             font-weight: 500;
-            transition: background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 2rem;
         }
 
         .nav a:hover {
-            background: rgba(0, 123, 255, 0.1);
+            color: white;
+            transform: translateY(-2px);
         }
 
-        .toggle-dark-mode {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #333;
+        .nav a:hover::before {
+            opacity: 1;
+        }
+
+        .nav a span {
+            position: relative;
+            z-index: 1;
         }
 
         /* CONTAINER */
         .container {
-            margin-top: 120px;
-            padding: 50px 20px;
+            margin-top: 6rem;
+            padding: 4rem 5%;
+            position: relative;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            position: relative;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: bold;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease;
         }
 
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            max-width: 700px;
-            margin: auto;
-            margin-bottom: 30px;
+        p.lead {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1s 0.2s ease backwards;
         }
 
         /* FITUR */
         .features {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
         }
 
         .feature {
-            width: 320px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
         }
 
         .feature:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature:hover::after {
+            transform: scaleX(1);
         }
 
         .feature i {
             font-size: 2.5rem;
-            color: #007BFF;
-            margin-bottom: 10px;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* MODE GELAP */
+        /* DARK MODE */
         .dark-mode {
-            background-color: #121212;
-            color: white;
+            background: var(--dark);
+            color: var(--light);
         }
 
         .dark-mode .header {
-            background: #1a1a1a;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.95);
         }
 
         .dark-mode .nav a {
-            color: white;
-        }
-
-        .dark-mode .nav a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .dark-mode .toggle-dark-mode {
-            color: white;
+            color: var(--light);
         }
 
         .dark-mode .feature {
-            background: #222;
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            background: #1e293b;
+        }
+
+        .dark-mode p.lead {
+            color: #94a3b8;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav {
+                gap: 1rem;
+            }
+
+            .nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* BUTTON STYLE */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: fadeInUp 1s 0.4s ease backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 3s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
+    <div class="custom-cursor"></div>
 
     <!-- HEADER -->
     <header class="header">
         <div class="logo">Reset API</div>
         <nav class="nav">
-            <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-            <a href="/auth/register"><i class="fas fa-user-plus"></i> Daftar</a>
+            <a href="/auth/login"><i class="fas fa-sign-in-alt"></i><span> Login</span></a>
+            <a href="/auth/register"><i class="fas fa-user-plus"></i><span> Daftar</span></a>
             <i class="fas fa-moon toggle-dark-mode"></i>
         </nav>
     </header>
 
-    <!-- CONTAINER -->
+    <!-- HERO -->
     <div class="container">
-        <h1>Selamat Datang di Reset API</h1>
-        <p>Kelola API key Anda dengan mudah, aman, dan gratis. Daftar sekarang dan nikmati layanan kami!</p>
+        <div class="hero">
+            <h1>Selamat Datang di Reset API</h1>
+            <p class="lead">Kelola API key Anda dengan mudah, aman, dan gratis. Dapatkan akses instan ke platform manajemen API paling modern.</p>
+            <button class="cta-button">
+                Mulai Sekarang
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
 
         <!-- FITUR -->
         <div class="features">
             <div class="feature">
-                <i class="fas fa-lock"></i>
-                <h3>Keamanan Terjamin</h3>
-                <p>Data Anda aman dengan enkripsi tingkat tinggi.</p>
+                <i class="fas fa-shield-alt"></i>
+                <h3>Keamanan Militer</h3>
+                <p>Enkripsi AES-256 dengan autentikasi multi-faktor untuk perlindungan maksimal</p>
             </div>
             <div class="feature">
-                <i class="fas fa-bolt"></i>
-                <h3>Respon Cepat</h3>
-                <p>API kami memiliki kecepatan tinggi dan responsif.</p>
+                <i class="fas fa-rocket"></i>
+                <h3>Performa Tinggi</h3>
+                <p>Response time di bawah 50ms dengan uptime 99.99%</p>
             </div>
             <div class="feature">
-                <i class="fas fa-cogs"></i>
-                <h3>Mudah Digunakan</h3>
-                <p>API key bisa didapatkan hanya dalam beberapa detik.</p>
+                <i class="fas fa-magic"></i>
+                <h3>Integrasi Mudah</h3>
+                <p>Dokumentasi lengkap dengan SDK untuk berbagai bahasa pemrograman</p>
             </div>
         </div>
     </div>
 
     <script>
-        const toggleDarkMode = document.querySelector(".toggle-dark-mode");
-        const body = document.body;
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
-        if (localStorage.getItem("darkMode") === "enabled") {
-            body.classList.add("dark-mode");
-            toggleDarkMode.classList.replace("fa-moon", "fa-sun");
+        // Dark Mode
+        const toggleDarkMode = document.querySelector(".toggle-dark-mode");
+        toggleDarkMode.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+            toggleDarkMode.classList.toggle("fa-sun");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+        });
+
+        // Particle Effect
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.width = Math.random() * 10 + 5 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.opacity = 0.5;
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 3000);
         }
 
-        toggleDarkMode.addEventListener("click", () => {
-            body.classList.toggle("dark-mode");
-
-            if (body.classList.contains("dark-mode")) {
-                localStorage.setItem("darkMode", "enabled");
-                toggleDarkMode.classList.replace("fa-moon", "fa-sun");
-            } else {
-                localStorage.setItem("darkMode", "disabled");
-                toggleDarkMode.classList.replace("fa-sun", "fa-moon");
-            }
+        document.addEventListener('click', (e) => {
+            createParticle(e.clientX, e.clientY);
         });
-    </script>
 
+        // Initial Dark Mode Check
+        if (localStorage.getItem("darkMode") === "enabled") {
+            document.body.classList.add("dark-mode");
+            toggleDarkMode.classList.add("fa-sun");
+        }
+    </script>
 </body>
 </html>

@@ -3,179 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Reset API</title>
+    <title>Login - Modern Interface</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: #f4f4f4;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            position: relative;
+            overflow: hidden;
         }
+
+        .background-blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        .blob1 { top: -200px; right: -150px; }
+        .blob2 { bottom: -200px; left: -150px; }
 
         .login-container {
-            width: 360px;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            text-align: center;
+            width: 440px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            transform: scale(1);
+            transition: transform 0.3s ease;
         }
 
-        .login-container h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #333;
+        .login-container:hover {
+            transform: scale(1.02);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 0.95rem;
         }
 
         .input-group {
+            margin-bottom: 25px;
             position: relative;
-            margin-bottom: 20px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
-            padding-left: 40px;
-            padding-right: 40px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 16px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 1rem;
-            outline: none;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.1);
         }
 
         .input-group i {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
+            color: #a0aec0;
             font-size: 1.2rem;
+            transition: color 0.3s ease;
         }
 
-        .icon-left {
-            left: 10px;
-        }
-
-        .toggle-password {
-            right: 10px;
+        .icon-left { left: 18px; }
+         .toggle-password {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 1.1rem;
+            color: #a0aec0;
         }
 
-        .input-group input:focus {
-            border-color: #007BFF;
-        }
 
-        .error {
-            color: red;
-            font-size: 0.9rem;
-            margin-top: -15px;
-            margin-bottom: 10px;
-            display: none;
+        .input-group input:focus ~ i {
+            color: #667eea;
         }
 
         .login-btn {
             width: 100%;
-            padding: 12px;
-            background: #007BFF;
+            padding: 16px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             border: none;
             color: white;
-            font-size: 1rem;
-            border-radius: 5px;
+            font-size: 1.1rem;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .login-btn:hover {
-            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .login-container p {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #666;
+        .login-btn:active {
+            transform: translateY(0);
         }
 
-        .login-container p a {
-            color: #007BFF;
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: left 0.6s;
+        }
+
+        .login-btn:hover::after {
+            left: 100%;
+        }
+
+        .additional-links {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .additional-links a {
+            color: #667eea;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
-        .login-container p a:hover {
-            text-decoration: underline;
+        .additional-links a:hover {
+            color: #764ba2;
+        }
+
+        .notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    padding: 18px 25px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transform: translate(-50%, -150%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notification.show {
+    transform: translate(-50%, 0);
+}
+
+.notification.success { background: #48bb78; }
+.notification.error { background: #f56565; }
+
+.notification-close {
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 30px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="background-blob blob1"></div>
+    <div class="background-blob blob2"></div>
 
     <div class="login-container">
-        <h1>Login</h1>
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Silakan Login Pakai Akun Anda</p>
+        </div>
+
         <form id="loginForm">
             <div class="input-group">
-                <i class="fas fa-user icon-left"></i>
                 <input type="text" id="username" placeholder="Username" required>
+                <i class="fas fa-user icon-left"></i>
             </div>
 
             <div class="input-group">
-                <i class="fas fa-lock icon-left"></i>
                 <input type="password" id="password" placeholder="Password" required>
-                <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+                <i class="fas fa-lock icon-left"></i>
+                <button type="button" class="toggle-password">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
 
-            <button type="submit" class="login-btn">Login</button>
+            <button type="submit" class="login-btn">
+                <span class="btn-text">Login </span>
+                <div class="loader"></div>
+            </button>
         </form>
-        <p>Belum punya akun? <a href="/auth/register">Daftar</a></p>
+
+        <div class="additional-links">
+            <p>Blm Punya Akun? <a href="/auth/register">Register</a></p>
+            <a href="/auth/forgot-password" class="forgot-password">Forgot Password?</a>
+        </div>
+    </div>
+
+    <div class="notification">
+        <span class="notification-message"></span>
+        <i class="fas fa-times notification-close"></i>
     </div>
 
     <script>
-        document.getElementById("loginForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
+        const notification = document.querySelector('.notification');
+        const notificationClose = document.querySelector('.notification-close');
+        const loader = document.querySelector('.loader');
+        const loginBtn = document.querySelector('.login-btn');
 
-            if (!username || !password) {
-                alert("Username dan password harus diisi!");
-                return;
-            }
-
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
-            });
-
-            const result = await response.json();
-            alert(result.message);
-
-            if (response.ok) {
-                localStorage.setItem("token", result.token);
-                window.location.href = "/dashboard";  
+        // Toggle Password Visibility
+        document.querySelector('.toggle-password').addEventListener('click', function(e) {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         });
 
-        function togglePassword() {
-            const passwordInput = document.getElementById("password");
-            const toggleIcon = document.querySelector(".toggle-password");
-
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleIcon.classList.remove("fa-eye");
-                toggleIcon.classList.add("fa-eye-slash");
-            } else {
-                passwordInput.type = "password";
-                toggleIcon.classList.remove("fa-eye-slash");
-                toggleIcon.classList.add("fa-eye");
-            }
+        // Show Notification
+        function showNotification(message, type = 'success') {
+            notification.querySelector('.notification-message').textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
         }
-    </script>
 
+        // Close Notification
+        notificationClose.addEventListener('click', () => {
+            notification.classList.remove('show');
+        });
+
+        // Form Submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.querySelector('.btn-text').style.opacity = '0';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showNotification('Login successful! Redirecting...');
+                    localStorage.setItem('token', result.token);
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    showNotification(result.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showNotification('Network error. Please try again.', 'error');
+            } finally {
+                // Reset loading state
+                loginBtn.disabled = false;
+                loginBtn.querySelector('.btn-text').style.opacity = '1';
+                loader.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
