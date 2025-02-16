@@ -35,6 +35,15 @@
       "premium": false,
       "lastReset": "2025-02-16",
       "createdAt": "2025-02-16T14:27:36.179Z"
+    },
+    {
+      "username": "matzzxml",
+      "password": "$2a$10$v78MLJeMcxF.1e3rgkna3OQFdGzXCRXYRsyJbHQufg6Xc8pMRO8SC",
+      "apikey": "af9a708a7c15f2849e4535ddcd78155b",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-16",
+      "createdAt": "2025-02-16T23:17:19.475Z"
     }
   ],
   "historyRequest": {
