@@ -31,7 +31,6 @@
             min-height: 100vh;
         }
 
-/* Enhanced Sidebar */
 .sidebar {
     width: 280px;
     background: linear-gradient(195deg, var(--dark-color) 0%, #0f172a 100%);
@@ -47,6 +46,25 @@
     transition: transform 0.3s ease-in-out;
     z-index: 1000;
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    
+    /* Tambahkan properti ini agar sidebar bisa di-scroll */
+    overflow-y: auto;
+    scrollbar-width: thin; /* Untuk Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* Untuk scrollbar di Chrome dan lainnya */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .sidebar.active {
@@ -373,9 +391,17 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </a>
             <ul class="submenu">
-                <li><a href="/api/download/instagram?url=">Instagram DL</a></li>
-                <li><a href="#">YouTube MP3</a></li>
-                <li><a href="#">TikTok DL</a></li>
+            <li><a href="/api/download/tiktok?url=&apikey=">Tiktok DL</a></li>
+                <li><a href="/api/download/douyin?url=&apikey=">Douyin DL</a></li>
+                <li><a href="/api/download/instagram?url=&apikey=">Instagram DL</a></li>
+                <li><a href="/api/download/pinterest?url=&apikey=">Pinterest DL</a></li>
+                <li><a href="/api/download/spotify?url=&apikey=">Spotify DL</a></li>
+                <li><a href="/api/download/videydl?url=&apikey=">Videy DL</a></li>
+                <li><a href="/api/download/facabook?url=&apikey=">Facebook DL</a></li>
+                <li><a href="/api/download/mediafire?url=&apikey=">MediaFire DL</a></li>
+                <li><a href="/api/download/gdrive?url=&apikey=">Gdrive DL</a></li>
+                <li><a href="/api/download/terabox?url=&apikey=">Terabox DL</a></li>
+                <li><a href="/api/download/capcut?url=&apikey=">Capcut DL</a></li>
             </ul>
         </li>
 
@@ -389,8 +415,8 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </a>
             <ul class="submenu">
-                <li><a href="/api/glowtext?text=hai&apikey=">Glow Text</a></li>
-                <li><a href="#">Meme Generator</a></li>
+                <li><a href="/api/maker/glowtext?text=hai&apikey=">Glow Text</a></li>
+                <li><a href="/api/maker/brat?text=pepek&apikey=">Brat</a></li>
                 <li><a href="#">QR Code Maker</a></li>
             </ul>
         </li>
@@ -405,9 +431,21 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </a>
             <ul class="submenu">
-                <li><a href="#">Google Reverse Image</a></li>
-                <li><a href="#">Instagram User Lookup</a></li>
-                <li><a href="#">YouTube Video Search</a></li>
+            <li><a href="/api/search/google?text=&apikey=">Google</a></li>
+            <li><a href="/api/search/images?text=&apikey=">Google Image</a></li>
+            <li><a href="/api/search/pinterest?query=&apikey=">Pinterest</a></li>
+            <li><a href="/api/search/spotify?q=&apikey=">Spotify</a></li>
+            <li><a href="/api/search/sfile?query=&apikey=">Sfile</a></li>
+            <li><a href="/api/search/lyrics?song=&apikey=">Lyrics</a></li>
+            <li><a href="/api/search/cerpen?category=&apikey=">Cerpen</a></li>
+            <li><a href="/api/search/wiki?query=&apikey=">Wikipedia</a></li>
+            <li><a href="/api/search/wikiimg?query=&apikey=">Wikipedia Image</a></li>
+            <li><a href="/api/search/bingsearch?query=&apikey=">Bing Search</a></li>
+            <li><a href="/api/search/bingimg?query=&apikey=">Bing Image</a></li>
+            <li><a href="/api/search/bingvid?query=&apikey=">Bing Video</a></li>
+            <li><a href="/api/search/pixabay?query=&apikey=">Pixabay</a></li>
+            <li><a href="/api/search/komiktaps?q=&apikey=">Komiktap Search</a></li>
+            <li><a href="/api/search/komiktap?apikey=">Komiktap Random</a></li>
             </ul>
         </li>
 
@@ -421,9 +459,11 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </a>
             <ul class="submenu">
-                <li><a href="#">IP Address Checker</a></li>
-                <li><a href="#">Password Generator</a></li>
-                <li><a href="#">Base64 Encoder/Decoder</a></li>
+                <li><a href="/api/tools/enhance?url=&apikey=">Remini</a></li>
+                <li><a href="/api/tools/dehaze?url=&apikey=">Dehaze</a></li>
+                <li><a href="/api/tools/recolor?url=&apikey=">Recolor</a></li>
+                <li><a href="/api/tools/ssweb?url=&apikey=">Ssweb</a></li>
+                <li><a href="/api/tools/cekip?ip=&apikey=">Ip Check</a></li>
             </ul>
         </li>
 
@@ -437,10 +477,24 @@
                 <i class="fas fa-chevron-right chevron"></i>
             </a>
             <ul class="submenu">
-                <li><a href="#">AI Chatbot</a></li>
+                <li><a href="/api/ai/simsimi?text=&lang=&apikey=">Sim Simi</a></li>
                 <li><a href="#">AI Image Generator</a></li>
                 <li><a href="#">AI Text Summarizer</a></li>
             </ul>
+        </li>
+    </ul>
+</div>
+
+<div class="sidebar-section">
+    <h3>Credit</h3>
+    <ul>
+        <li>
+            <a href="/user/credit">
+                <span>
+                    <i class="fas fa-code"></i>
+                    Thanks To
+                </span>
+            </a>
         </li>
     </ul>
 </div>
