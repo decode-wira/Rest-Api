@@ -13,14 +13,16 @@
       "username": "Hai Cipay",
       "password": "$2a$10$BbbLz6abmhANRkCMqSIWzeQ2x8Im89xsY4xFfjYBBzR4SlIZoN6T.",
       "apikey": "9337c1538eac1a194776119d86b97501",
-      "limit": 1500,
+      "limit": 1499,
       "premium": true,
       "lastReset": "2025-02-16",
       "createdAt": "2025-02-16T02:13:45.523Z"
     }
   ],
-  "historyRequest": {},
-  "count": 0,
+  "historyRequest": {
+    "2025-02-16": 1
+  },
+  "count": 1,
   "visitor": 41,
   "deposits": []
 }
