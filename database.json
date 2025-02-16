@@ -1,19 +1,10 @@
 {
-  "users": [
-    {
-      "username": "Line Hai",
-      "password": "$2a$10$VjObtP1Dv2eK3xp0tXtf8eY/AxQrBu..toRji/F.yL8EJRlxWWDui",
-      "apikey": "d6a526451492be23e7b9d6dad20e4c61",
-      "limit": 100,
-      "premium": false,
-      "lastReset": "2025-02-16",
-      "createdAt": "2025-02-16T00:59:30.625Z"
-    },
+  "users": [    
     {
       "username": "Hai Cipay",
       "password": "$2a$10$BbbLz6abmhANRkCMqSIWzeQ2x8Im89xsY4xFfjYBBzR4SlIZoN6T.",
       "apikey": "9337c1538eac1a194776119d86b97501",
-      "limit": 1497,
+      "limit": 100000,
       "premium": true,
       "lastReset": "2025-02-16",
       "createdAt": "2025-02-16T02:13:45.523Z"
