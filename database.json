@@ -8,6 +8,15 @@
       "premium": true,
       "lastReset": "2025-02-16",
       "createdAt": "2025-02-16T02:13:45.523Z"
+    },
+    {
+      "username": "sanjayaadiputra376@gmail.com",
+      "password": "$2a$10$Kc5PHfRsqnoWndyVeuJPmek3Kg1sSQ9Wig0fXul4crnv0yhAyNTBG",
+      "apikey": "c90e950d315ecd232e37fd1fec7d31d2",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-16",
+      "createdAt": "2025-02-16T06:47:26.657Z"
     }
   ],
   "historyRequest": {
