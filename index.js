@@ -9,11 +9,13 @@ const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 
-const GITHUB_TOKEN = "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";
+// Konfigurasi environment variables
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const REPO_OWNER = "decode-wira";
 const REPO_NAME = "Rest-Api";
 const FILE_PATH = "database.json";
 const API_KEY = "CALLLINE";
+const JWT_SECRET = process.env.JWT_SECRET || "secret_key";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 const HEADERS = {
@@ -21,96 +23,122 @@ const HEADERS = {
     Accept: "application/vnd.github.v3+json",
 };
 
+// Struktur database default
+const DEFAULT_DB = {
+    users: [],
+    historyRequest: {},
+    count: 0,
+    visitor: 0,
+    deposits: []
+};
+
+// Helper functions
+async function fetchGitHubFile() {
+    try {
+        const response = await axios.get(GITHUB_API_URL, {
+            headers: HEADERS,
+            params: { timestamp: Date.now() }
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.status === 404) return null;
+        throw error;
+    }
+}
+
 async function getDatabase() {
     try {
-        const { data } = await axios.get(GITHUB_API_URL, { headers: HEADERS, params: { timestamp: Date.now() } });
-        if (!data.content) throw new Error("Data tidak ditemukan");
-        const content = JSON.parse(Buffer.from(data.content, "base64").toString("utf-8"));
-        return content || { users: [], historyRequest: {}, count: 0, visitor: 0 };
+        const fileData = await fetchGitHubFile();
+        if (!fileData) return DEFAULT_DB;
+        
+        const content = JSON.parse(Buffer.from(fileData.content, "base64").toString("utf-8"));
+        return {
+            ...DEFAULT_DB,
+            ...content,
+            users: content.users || [],
+            historyRequest: content.historyRequest || {}
+        };
     } catch (error) {
-        console.error("Gagal mengambil database:", error.response?.data || error.message);
-        return { users: [], historyRequest: {}, count: 0, visitor: 0 };
+        console.error("Gagal mengambil database:", error.message);
+        return DEFAULT_DB;
     }
 }
 
 async function saveDatabase(database) {
     try {
-        const { data } = await axios.get(GITHUB_API_URL, { headers: HEADERS });
-        if (!data.sha) throw new Error("SHA tidak ditemukan, gagal update");
-        await axios.put(
-            GITHUB_API_URL,
-            {
-                message: "Update database.json",
-                content: Buffer.from(JSON.stringify(database, null, 2)).toString("base64"),
-                sha: data.sha,
-            },
-            { headers: HEADERS }
-        );
-        console.log("Database berhasil diperbarui!");
+        const fileData = await fetchGitHubFile();
+        const payload = {
+            message: "Update database.json",
+            content: Buffer.from(JSON.stringify(database, null, 2)).toString("base64"),
+            sha: fileData?.sha
+        };
+
+        const method = fileData ? "put" : "post";
+        await axios[method](GITHUB_API_URL, payload, { headers: HEADERS });
+        console.log("Database berhasil disimpan!");
+        return true;
     } catch (error) {
-        console.error("Gagal menyimpan database:", error.response?.data || error.message);
+        console.error("Gagal menyimpan database:", error.message);
+        return false;
     }
 }
 
-async function tambahPengunjung() {
-    const database = await getDatabase();
-    database.visitor = (database.visitor || 0) + 1;
-    await saveDatabase(database);
+// Middleware
+async function databaseMiddleware(req, res, next) {
+    req.db = await getDatabase();
+    next();
 }
-
-const getTodayDate = () => new Date().toISOString().split("T")[0];
-
-async function resetLimitHarian() {
-    const database = await getDatabase();
-    if (!database || !database.users) {
-        console.error("Database atau users tidak ditemukan!", database);
-        return;
-    }
-
-    const today = new Date().toISOString();
-    database.users = database.users.map(user => {
-        if (!user.last_reset || new Date(user.last_reset).toISOString().split("T")[0] !== getTodayDate()) {
-            user.limit = user.premium ? 1500 : 100;
-            user.last_reset = today;
-        }
-        return user;
-    });
-
-    await saveDatabase(database);
-}
-
 
 function authenticateToken(req, res, next) {
-    const token = req.headers["authorization"];
-    if (!token) return res.status(403).json({ message: "Token diperlukan!" });
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    
+    if (!token) return res.status(401).json({ message: "Token diperlukan!" });
 
-    jwt.verify(token.split(" ")[1], "secret_key", (err, user) => {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.status(403).json({ message: "Token tidak valid!" });
         req.user = user;
         next();
     });
 }
 
-async function UpdateDb(apikey) {
-    const database = await getDatabase();
+// Fungsi utilitas
+const getTodayDate = () => {
+    const now = new Date();
+    return new Date(now.getTime() - (now.getTimezoneOffset() * 60000))
+        .toISOString()
+        .split("T")[0];
+};
+
+async function updateUsage(apikey) {
+    const db = await getDatabase();
+    const user = db.users.find(u => u.apikey === apikey);
+    
+    if (!user) return { success: false, message: "API key tidak valid" };
+    if (user.limit <= 0) return { success: false, message: "Limit harian habis" };
+
     const today = getTodayDate();
-    const user = database.users.find((u) => u.apikey === apikey);
-    if (!user) return { success: false, message: "Apikey tidak valid!" };
-    if (user.limit <= 0) return { success: false, message: "Limit penggunaan habis!" };
+    
+    // Reset limit harian
+    if (user.lastReset !== today) {
+        user.limit = user.premium ? 1500 : 100;
+        user.lastReset = today;
+    }
 
+    // Kurangi limit
     user.limit -= 1;
-    database.count = (database.count || 0) + 1;
+    db.count = (db.count || 0) + 1;
+    db.historyRequest[today] = (db.historyRequest[today] || 0) + 1;
 
-    if (!database.historyRequest) database.historyRequest = {};
-    if (!database.historyRequest[today]) database.historyRequest[today] = 0;
-    database.historyRequest[today] += 1;
-
-    await saveDatabase(database);
+    await saveDatabase(db);
     return { success: true };
 }
 
+// Routes
 app.get("/", async (req, res) => {
-    await tambahPengunjung();
+    const db = await getDatabase();
+    db.visitor = (db.visitor || 0) + 1;
+    await saveDatabase(db);
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 app.get("/auth/register", (req, res) => {
@@ -130,67 +158,81 @@ app.get("/user/upgrade", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "upgrade.html"));
 });
 
-
-
-
-app.post("/api/register", async (req, res) => {
+app.post("/api/register", databaseMiddleware, async (req, res) => {
     const { username, password } = req.body;
+    
     if (!username || !password) {
-        return res.status(400).json({ message: "Username dan password harus diisi!" });
+        return res.status(400).json({ message: "Username dan password diperlukan" });
     }
-    const database = await getDatabase();
-    if (!database.users) {
-        database.users = [];
-    }
-    if (database.users.some((user) => user.username === username)) {
-        return res.status(400).json({ message: "Username sudah digunakan!" });
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const apikey = Math.random().toString(36).substring(2, 15);
-    const user = {
-        username,
-        password: hashedPassword,
-        apikey,
-        limit: 100,
-        premium: false,
-        last_reset: new Date().toISOString(),
-    };
-    database.users.push(user);
-    await saveDatabase(database);
-    res.json({ message: "User berhasil terdaftar!", apikey });
-});
 
-app.post("/api/login", async (req, res) => {
-    const { username, password } = req.body;
-    const database = await getDatabase();
-    const user = database.users.find((u) => u.username === username);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ message: "Username atau password salah!" });
+    if (req.db.users.some(u => u.username === username)) {
+        return res.status(409).json({ message: "Username sudah terdaftar" });
     }
-    const token = jwt.sign({ username, apikey: user.apikey }, "secret_key", { expiresIn: "1h" });
-    res.json({ message: "Login berhasil!", token });
-});
 
-app.get("/api/profile", async (req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: "Token tidak ditemukan!" });
-    }
     try {
-        const decoded = jwt.verify(token.replace("Bearer ", ""), "secret_key");
-        const database = await getDatabase();
-        const user = database.users.find((u) => u.username === decoded.username);
-        if (!user) {
-            return res.status(404).json({ message: "User tidak ditemukan!" });
-        }
-        res.json({
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = {
+            username,
+            password: hashedPassword,
+            apikey: require("crypto").randomBytes(16).toString("hex"),
+            limit: 100,
+            premium: false,
+            lastReset: getTodayDate(),
+            createdAt: new Date().toISOString()
+        };
+
+        req.db.users.push(newUser);
+        await saveDatabase(req.db);
+
+        res.status(201).json({
+            message: "Registrasi berhasil",
+            apikey: newUser.apikey
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Gagal melakukan registrasi" });
+    }
+});
+
+app.post("/api/login", databaseMiddleware, async (req, res) => {
+    const { username, password } = req.body;
+    const user = req.db.users.find(u => u.username === username);
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({ message: "Kredensial tidak valid" });
+    }
+
+    const token = jwt.sign(
+        { userId: user.apikey, username: user.username },
+        JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+
+    res.json({ 
+        message: "Login berhasil",
+        token,
+        user: {
             username: user.username,
             apikey: user.apikey,
             limit: user.limit,
-        });
-    } catch (error) {
-        return res.status(403).json({ message: "Token tidak valid!" });
+            premium: user.premium
+        }
+    });
+});
+
+app.get("/api/profile", authenticateToken, databaseMiddleware, async (req, res) => {
+    const user = req.db.users.find(u => u.apikey === req.user.userId);
+    
+    if (!user) {
+        return res.status(404).json({ message: "Pengguna tidak ditemukan" });
     }
+
+    res.json({
+        username: user.username,
+        apikey: user.apikey,
+        limit: user.limit,
+        premium: user.premium,
+        registeredAt: user.createdAt
+    });
 });
 
 app.post("/api/upgrade-premium", async (req, res) => {
@@ -342,8 +384,13 @@ app.get("/api/glowtext", async (req, res) => {
     }
 });
 
+// Server setup
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
-    await resetLimitHarian();
+app.listen(PORT, () => {
+    console.log(`Server berjalan di port ${PORT}`);
+    setInterval(async () => {
+        const db = await getDatabase();
+        const needsReset = db.users.some(user => user.lastReset !== getTodayDate());
+        if (needsReset) await saveDatabase(db);
+    }, 3600000); // Reset limit setiap jam
 });
