@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit QRISFAST</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        img { width: 200px; height: 200px; margin-top: 10px; }
+        .hidden { display: none; }
+        .success { color: green; font-weight: bold; }
+        .expired { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Deposit QRISFAST</h2>
+        <input type="number" id="nominal" placeholder="Masukkan nominal">
+        <button onclick="buatDeposit()">Buat Deposit</button>
+
+        <div id="qr-container" class="hidden">
+            <h3>Scan QR untuk Membayar</h3>
+            <img id="qr-img" src="" alt="QR Code">
+            <p id="wr-text"></p>
+            <p id="status-text">Menunggu pembayaran...</p>
+        </div>
+    </div>
+
+    <script>
+        let reff_id = "";
+        let wr = "";
+
+        async function buatDeposit() {
+            const nominal = document.getElementById("nominal").value;
+            if (!nominal) return alert("Masukkan nominal!");
+
+            const response = await fetch("/api/deposit/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nominal })
+            });
+
+            const result = await response.json();
+            if (result.status !== "success") return alert("Gagal membuat deposit!");
+
+            reff_id = result.reff_id;
+            wr = result.wr; // Simpan WR
+            document.getElementById("qr-img").src = result.qr_url;
+            document.getElementById("wr-text").innerText = `Wallet Reference (WR): ${wr}`;
+            document.getElementById("qr-container").classList.remove("hidden");
+            cekStatusDeposit();
+        }
+
+        async function cekStatusDeposit() {
+            if (!reff_id) return;
+
+            const interval = setInterval(async () => {
+                const response = await fetch(`/api/deposit/status/${reff_id}`);
+                const result = await response.json();
+
+                if (result.status === "success" && result.data.status === "success") {
+                    document.getElementById("status-text").innerText = "✅ Deposit berhasil!";
+                    document.getElementById("status-text").classList.add("success");
+                    clearInterval(interval);
+                    setTimeout(() => document.getElementById("qr-container").classList.add("hidden"), 3000);
+                } else if (result.status === "expired") {
+                    document.getElementById("status-text").innerText = "❌ Deposit kedaluwarsa!";
+                    document.getElementById("status-text").classList.add("expired");
+                    clearInterval(interval);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

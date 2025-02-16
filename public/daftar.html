@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Reset API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+
+        .register-container {
+            width: 360px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .register-container h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            padding-left: 40px;
+            padding-right: 40px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-group i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .icon-left {
+            left: 10px;
+        }
+
+        .toggle-password {
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .input-group input:focus {
+            border-color: #007BFF;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background: #007BFF;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .register-btn:hover {
+            background: #0056b3;
+        }
+
+        .register-container p {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .register-container p a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .register-container p a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <h1>Daftar Akun</h1>
+        <form id="registerForm">
+            <div class="input-group">
+                <i class="fas fa-user icon-left"></i>
+                <input type="text" id="username" placeholder="Username (min. 6 karakter)" required>
+            </div>
+            <p class="error" id="usernameError">Username minimal 6 karakter!</p>
+
+            <div class="input-group">
+                <i class="fas fa-lock icon-left"></i>
+                <input type="password" id="password" placeholder="Password (min. 6 karakter)" required>
+                <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+            </div>
+            <p class="error" id="passwordError">Password minimal 6 karakter!</p>
+
+            <button type="submit" class="register-btn">Daftar</button>
+        </form>
+        <p>Sudah punya akun? <a href="/auth/login">Login</a></p>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const usernameError = document.getElementById("usernameError");
+            const passwordError = document.getElementById("passwordError");
+
+            // Reset error message
+            usernameError.style.display = "none";
+            passwordError.style.display = "none";
+
+            if (username.length < 6) {
+                usernameError.style.display = "block";
+                return;
+            }
+
+            if (password.length < 6) {
+                passwordError.style.display = "block";
+                return;
+            }
+
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (response.ok) window.location.href = "/auth/login";
+        });
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleIcon = document.querySelector(".toggle-password");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+</body>
+</html>

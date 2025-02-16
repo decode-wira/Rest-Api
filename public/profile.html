@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+
+        .profile-container {
+            width: 400px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: left;
+            position: relative;
+        }
+
+        .profile-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+
+        .profile-pic-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007BFF;
+        }
+
+        .edit-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 120px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .edit-icon i {
+            font-size: 18px;
+            color: #007BFF;
+        }
+
+        .profile-container label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #eee;
+            outline: none;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .input-group i:hover {
+            color: #007BFF;
+        }
+
+        .buttons {
+            margin-top: 15px;
+        }
+
+        .buttons button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .dashboard-btn {
+            background: #007BFF;
+        }
+
+        .dashboard-btn:hover {
+            background: #0056b3;
+        }
+
+        .logout-btn {
+            background: #FF3B30;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Overlay untuk background gelap */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Box popup */
+.popup-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Tombol close */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #ff0000;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h1>Profil Pengguna</h1>
+
+        <div class="profile-pic-container">
+            <img src="https://via.placeholder.com/100" alt="Foto Profil" class="profile-pic" id="profilePic">
+            <label for="fileInput" class="edit-icon"><i class="fas fa-camera"></i></label>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <label>Username:</label>
+        <div class="input-group">
+            <input type="text" id="username" readonly>
+        </div>
+
+        <label>API Key:</label>
+        <div class="input-group">
+            <input type="text" id="apikey" readonly>
+            <i class="fas fa-copy" id="copyBtn" onclick="copyApiKey()"></i>
+        </div>
+
+        <label>Limit:</label>
+        <div class="input-group">
+            <input type="text" id="limit" readonly>
+        </div>
+
+        <div class="buttons">
+            <button class="dashboard-btn" onclick="window.location.href='dashboard.html'">Kembali ke Dashboard</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <button id="upgradePremium">Upgrade ke Premium</button>
+
+        <!-- Overlay Popup -->
+        <div id="popupOverlay" class="popup-overlay">
+            <div class="popup-box">
+                <span class="close-btn" onclick="tutupPopup()">&times;</span>
+                <h3>Scan QR untuk Pembayaran</h3>
+                <img id="qrImage" src="" alt="QR Code" style="width: 200px;">
+                <p>Nominal: <span id="qrAmount"></span></p>
+                <p>Exp: <span id="qrExpiry"></span></p>
+            </div>
+        </div>
+
+        <!-- Kontainer Detail Transaksi -->
+        <div id="transactionDetails" style="display: none; text-align: center;">
+            <h3>Detail Transaksi Berhasil ✅</h3>
+            <p><strong>ID Transaksi:</strong> <span id="trxId"></span></p>
+            <p><strong>Nominal:</strong> <span id="trxAmount"></span></p>
+            <p><strong>Status:</strong> <span id="trxStatus"></span></p>
+            <p><strong>Waktu:</strong> <span id="trxTime"></span></p>
+        </div>
+
+    </div>
+
+    <script>
+        async function fetchProfile() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Anda belum login!");
+                window.location.href = "/auth/login";
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/profile", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.message);
+                    window.location.href = "/auth/login";
+                    return;
+                }
+
+                document.getElementById("username").value = data.username;
+                document.getElementById("apikey").value = data.apikey;
+                document.getElementById("limit").value = data.limit;
+
+                // **Sembunyikan tombol upgrade kalau user sudah premium**
+                const upgradeBtn = document.getElementById("upgradePremium");
+                if (data.premium && upgradeBtn) {
+                    upgradeBtn.style.display = "none";
+                }
+            } catch (error) {
+                console.error("Gagal mengambil data profil:", error);
+                alert("Terjadi kesalahan saat mengambil data profil.");
+            }
+        }
+
+        function copyApiKey() {
+            let apiKeyField = document.getElementById("apikey");
+            let copyBtn = document.getElementById("copyBtn");
+
+            navigator.clipboard.writeText(apiKeyField.value).then(() => {
+                copyBtn.classList.replace("fa-copy", "fa-check");
+                copyBtn.style.color = "green";
+
+                setTimeout(() => {
+                    copyBtn.classList.replace("fa-check", "fa-copy");
+                    copyBtn.style.color = "#666";
+                }, 2000);
+            }).catch(err => {
+                console.error("Gagal menyalin:", err);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/auth/login";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const upgradeBtn = document.getElementById("upgradePremium");
+
+            if (upgradeBtn) {
+                upgradeBtn.addEventListener("click", async function () {
+                    this.disabled = true;
+                    let reffId = "UPG" + Date.now();
+                    let nominal = 500;
+
+                    try {
+                        let res = await fetch("/api/deposit", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ nominal, method: "QRISFAST", reff_id: reffId })
+                        });
+
+                        let data = await res.json();
+                        if (data.success) {
+                            document.getElementById("popupOverlay").style.display = "flex";
+                            document.getElementById("qrImage").src = data.data.qr_url;
+                            document.getElementById("qrAmount").innerText = data.data.nominal;
+                            document.getElementById("qrExpiry").innerText = data.data.expired_at;
+
+                            cekStatusUpgrade(data.data.id, this);
+                        } else {
+                            alert("Gagal membuat deposit: " + data.error);
+                            this.disabled = false;
+                        }
+                    } catch (err) {
+                        console.error("Error saat upgrade:", err);
+                        this.disabled = false;
+                    }
+                });
+            }
+
+            fetchProfile();
+        });
+
+        function cekStatusUpgrade(id, button) {
+            let interval = setInterval(async () => {
+                try {
+                    let res = await fetch(`/api/deposit/status/${id}`);
+                    let data = await res.json();
+
+                    if (data.success && data.data.status === "success") {
+                        clearInterval(interval);
+                        upgradePremium(button, data.data);
+                    } else if (!data.success) {
+                        clearInterval(interval);
+                        alert("Transaksi gagal atau dibatalkan.");
+                        button.disabled = false;
+                    }
+                } catch (err) {
+                    console.error("Error saat cek status transaksi:", err);
+                }
+            }, 5000);
+        }
+
+        function tutupPopup() {
+            document.getElementById("popupOverlay").style.display = "none";
+        }
+
+        async function upgradePremium(button, trxData) {
+            try {
+                let res = await fetch("/api/upgrade-premium", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                let result = await res.json();
+                if (result.premium) {
+                    tutupPopup();
+                    document.getElementById("transactionDetails").style.display = "block";
+
+                    document.getElementById("trxId").innerText = trxData.id;
+                    document.getElementById("trxAmount").innerText = trxData.nominal;
+                    document.getElementById("trxStatus").innerText = "Berhasil ✅";
+                    document.getElementById("trxTime").innerText = new Date().toLocaleString();
+
+                    alert("Selamat! Akun Anda telah di-upgrade ke premium.");
+                    button.style.display = "none";
+                } else {
+                    alert("Gagal upgrade premium: " + result.message);
+                    button.disabled = false;
+                }
+            } catch (err) {
+                console.error("Error saat upgrade premium:", err);
+            }
+        }
+    </script>
+</body>
+
+
+</html>
