@@ -3,6 +3,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 require("dotenv").config();
 
 const app = express();
@@ -134,6 +135,19 @@ async function updateUsage(apikey) {
     return { success: true };
 }
 
+// Fungsi tambah pengunjung baru
+async function tambahPengunjung() {
+    try {
+        const db = await getDatabase();
+        db.visitor = (db.visitor || 0) + 1;
+        await saveDatabase(db);
+        return true;
+    } catch (error) {
+        console.error("Gagal menambah pengunjung:", error);
+        return false;
+    }
+}
+
 // Routes
 app.get("/", async (req, res) => {
     const db = await getDatabase();
@@ -141,19 +155,24 @@ app.get("/", async (req, res) => {
     await saveDatabase(db);
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-app.get("/auth/register", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "daftar.html"));
-});
-app.get("/auth/login", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "login.html"));
-});
+
 app.get("/dashboard", async (req, res) => {
     await tambahPengunjung();
     res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
+
+app.get("/auth/register", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "daftar.html"));
+});
+
+app.get("/auth/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
 app.get("/user/profile", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "profile.html"));
 });
+
 app.get("/user/upgrade", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "upgrade.html"));
 });
@@ -242,7 +261,7 @@ app.post("/api/upgrade-premium", async (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token.replace("Bearer ", ""), "secret_key");
+        const decoded = jwt.verify(token.replace("Bearer ", ""), JWT_SECRET); // Diperbaiki menggunakan JWT_SECRET
         const database = await getDatabase();
         const user = database.users.find((u) => u.username === decoded.username);
 
@@ -258,12 +277,16 @@ app.post("/api/upgrade-premium", async (req, res) => {
         user.limit = 1500;
         await saveDatabase(database);
 
-        res.json({ message: "Akun berhasil di-upgrade ke premium!", premium: true, limit: user.limit });
+        res.json({ 
+            message: "Akun berhasil di-upgrade ke premium!", 
+            premium: true, 
+            limit: user.limit,
+            newApiKey: user.apikey // Tambahan informasi API key
+        });
     } catch (error) {
         return res.status(403).json({ message: "Token tidak valid!" });
     }
 });
-
 
 app.get("/api/history-request", async (req, res) => {
     try {
@@ -388,9 +411,24 @@ app.get("/api/glowtext", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
+    // Jadwal reset limit harian
     setInterval(async () => {
         const db = await getDatabase();
-        const needsReset = db.users.some(user => user.lastReset !== getTodayDate());
-        if (needsReset) await saveDatabase(db);
-    }, 3600000); // Reset limit setiap jam
+        const today = getTodayDate();
+        let needsUpdate = false;
+        
+        db.users = db.users.map(user => {
+            if (user.lastReset !== today) {
+                user.limit = user.premium ? 1500 : 100;
+                user.lastReset = today;
+                needsUpdate = true;
+            }
+            return user;
+        });
+
+        if (needsUpdate) {
+            await saveDatabase(db);
+            console.log("Limit pengguna telah di-reset");
+        }
+    }, 3600000); // Setiap 1 jam
 });
