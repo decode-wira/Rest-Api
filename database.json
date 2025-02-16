@@ -17,6 +17,15 @@
       "premium": false,
       "lastReset": "2025-02-16",
       "createdAt": "2025-02-16T06:47:26.657Z"
+    },
+    {
+      "username": "Wannhosting",
+      "password": "$2a$10$8Qr1IjufrH4BgR1cIfCjwuY.zSqmGKGqPCsxIjoH6T39nzM.sHuzm",
+      "apikey": "9a73be7aef18b92fce9a5ae5b00fe8b9",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-16",
+      "createdAt": "2025-02-16T07:05:40.327Z"
     }
   ],
   "historyRequest": {
