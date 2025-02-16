@@ -17,124 +17,234 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: #f4f4f4;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
         }
 
         .register-container {
-            width: 360px;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            text-align: center;
+            width: 400px;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-container:hover {
+            transform: translateY(-5px);
         }
 
         .register-container h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #2d3748;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .input-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
-            padding-left: 40px;
-            padding-right: 40px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 1rem;
             outline: none;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #a0aec0;
+            opacity: 1;
         }
 
         .input-group i {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
-            font-size: 1.2rem;
+            color: #a0aec0;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .input-group input:focus ~ i {
+            color: #667eea;
         }
 
         .icon-left {
-            left: 10px;
+            left: 15px;
         }
 
         .toggle-password {
-            right: 10px;
+            right: 15px;
             cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .input-group input:focus {
-            border-color: #007BFF;
+        .toggle-password:hover {
+            transform: scale(1.1);
+            color: #667eea;
         }
 
         .error {
-            color: red;
+            display: flex;
+            align-items: center;
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin: -10px 0 15px 5px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .error.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .error i {
+            margin-right: 8px;
             font-size: 0.9rem;
-            margin-top: -15px;
-            margin-bottom: 10px;
-            display: none;
         }
 
         .register-btn {
             width: 100%;
-            padding: 12px;
-            background: #007BFF;
+            padding: 14px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             border: none;
             color: white;
             font-size: 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            bottom: -50%;
+            left: -50%;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0) 25%,
+                rgba(255,255,255,0.2) 50%,
+                rgba(255,255,255,0) 75%
+            );
+            transform: translateX(-100%) rotate(45deg);
+            transition: transform 0.4s ease;
         }
 
         .register-btn:hover {
-            background: #0056b3;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .register-btn:hover::after {
+            transform: translateX(100%) rotate(45deg);
         }
 
         .register-container p {
-            margin-top: 15px;
+            margin-top: 20px;
+            text-align: center;
+            color: #718096;
             font-size: 0.9rem;
-            color: #666;
         }
 
         .register-container p a {
-            color: #007BFF;
+            color: #667eea;
             text-decoration: none;
+            font-weight: 600;
+            position: relative;
         }
 
-        .register-container p a:hover {
-            text-decoration: underline;
+        .register-container p a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #764ba2;
+            transition: width 0.3s ease;
+        }
+
+        .register-container p a:hover::after {
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                width: 90%;
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            body {
+                align-items: flex-start;
+                padding-top: 40px;
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="register-container">
-        <h1>Daftar Akun</h1>
+        <h1>Buat Akun Baru</h1>
         <form id="registerForm">
             <div class="input-group">
                 <i class="fas fa-user icon-left"></i>
                 <input type="text" id="username" placeholder="Username (min. 6 karakter)" required>
             </div>
-            <p class="error" id="usernameError">Username minimal 6 karakter!</p>
+            <div class="error" id="usernameError">
+                <i class="fas fa-exclamation-circle"></i>
+                Username minimal 6 karakter!
+            </div>
 
             <div class="input-group">
                 <i class="fas fa-lock icon-left"></i>
                 <input type="password" id="password" placeholder="Password (min. 6 karakter)" required>
                 <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
             </div>
-            <p class="error" id="passwordError">Password minimal 6 karakter!</p>
+            <div class="error" id="passwordError">
+                <i class="fas fa-exclamation-circle"></i>
+                Password minimal 6 karakter!
+            </div>
 
-            <button type="submit" class="register-btn">Daftar</button>
+            <button type="submit" class="register-btn">Daftar Sekarang</button>
         </form>
-        <p>Sudah punya akun? <a href="/auth/login">Login</a></p>
+        <p>Sudah punya akun? <a href="/auth/login">Masuk disini</a></p>
     </div>
 
     <script>
@@ -145,20 +255,25 @@
             const usernameError = document.getElementById("usernameError");
             const passwordError = document.getElementById("passwordError");
 
-            // Reset error message
-            usernameError.style.display = "none";
-            passwordError.style.display = "none";
+            // Reset error
+            usernameError.classList.remove('show');
+            passwordError.classList.remove('show');
+
+            let isValid = true;
 
             if (username.length < 6) {
-                usernameError.style.display = "block";
-                return;
+                usernameError.classList.add('show');
+                isValid = false;
             }
 
             if (password.length < 6) {
-                passwordError.style.display = "block";
-                return;
+                passwordError.classList.add('show');
+                isValid = false;
             }
 
+            if (!isValid) return;
+
+            // Simulasi API call
             const response = await fetch("/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -166,8 +281,15 @@
             });
 
             const result = await response.json();
-            alert(result.message);
-            if (response.ok) window.location.href = "/auth/login";
+            
+            if (response.ok) {
+                showSuccessModal('Pendaftaran berhasil! Mengarahkan ke login...');
+                setTimeout(() => {
+                    window.location.href = "/auth/login";
+                }, 2000);
+            } else {
+                showErrorModal(result.message || 'Terjadi kesalahan');
+            }
         });
 
         function togglePassword() {
@@ -176,15 +298,60 @@
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                toggleIcon.classList.remove("fa-eye");
-                toggleIcon.classList.add("fa-eye-slash");
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 passwordInput.type = "password";
-                toggleIcon.classList.remove("fa-eye-slash");
-                toggleIcon.classList.add("fa-eye");
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
-    </script>
 
+        function showSuccessModal(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #48bb78;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            modal.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ${message}
+            `;
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                modal.remove();
+            }, 3000);
+        }
+
+        function showErrorModal(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #f56565;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            modal.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                ${message}
+            `;
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                modal.remove();
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
