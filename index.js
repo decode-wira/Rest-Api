@@ -11,12 +11,12 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Konfigurasi environment variables
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_TOKEN = "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";
 const REPO_OWNER = "decode-wira";
 const REPO_NAME = "Rest-Api";
 const FILE_PATH = "database.json";
 const API_KEY = "CALLLINE";
-const JWT_SECRET = process.env.JWT_SECRET || "secret_key";
+const JWT_SECRET = "CALLLINE";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 const HEADERS = {
