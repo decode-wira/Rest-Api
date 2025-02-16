@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 
-const GITHUB_TOKEN = "#";
+const GITHUB_TOKEN = "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";
 const REPO_OWNER = "decode-wira";
 const REPO_NAME = "Rest-Api";
 const FILE_PATH = "database.json";
