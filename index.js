@@ -10,10 +10,10 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const GITHUB_TOKEN = "#";
-const REPO_OWNER = "#";
-const REPO_NAME = "#";
-const FILE_PATH = "#";
-const API_KEY = "#";
+const REPO_OWNER = "decode-wira";
+const REPO_NAME = "Rest-Api";
+const FILE_PATH = "database.json";
+const API_KEY = "CALLLINE";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 const HEADERS = {
