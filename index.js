@@ -62,6 +62,11 @@ const getTodayDate = () => new Date().toISOString().split("T")[0];
 
 async function resetLimitHarian() {
     const database = await getDatabase();
+    if (!database || !database.users) {
+        console.error("Database atau users tidak ditemukan!", database);
+        return;
+    }
+
     const today = new Date().toISOString();
     database.users = database.users.map(user => {
         if (!user.last_reset || new Date(user.last_reset).toISOString().split("T")[0] !== getTodayDate()) {
@@ -69,7 +74,8 @@ async function resetLimitHarian() {
             user.last_reset = today;
         }
         return user;
-    });    
+    });
+
     await saveDatabase(database);
 }
 
