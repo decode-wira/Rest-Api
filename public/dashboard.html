@@ -341,7 +341,7 @@
     <h3>User</h3>
     <ul>
         <li>
-            <a href="#">
+            <a href="dashboard">
             <span>
                 <i class="fas fa-home"></i>
                 Dashboard
@@ -349,7 +349,7 @@
             </a>
         </li>
         <li>
-            <a href="user/profile">
+            <a href="/user/profile">
             <span>
                 <i class="fas fa-user"></i>
                 Profile
@@ -360,32 +360,90 @@
 </div>
 
     <!-- Endpoint API (Services Section) -->
-    <div class="sidebar-section">
-        <h3>End Point API</h3>
-        <ul>
-            <li>
-                <a class="has-submenu">
-                    <span>
-                        <i class="fas fa-download"></i>
-                        Downloader
-                    </span>
-                    <i class="fas fa-chevron-right chevron"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="#">Instagram DL</a></li>
-                    <li><a href="#">YouTube MP3</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">
+<div class="sidebar-section">
+    <h3>End Point API</h3>
+    <ul>
+        <!-- Downloader -->
+        <li>
+            <a class="has-submenu">
+                <span>
+                    <i class="fas fa-download"></i>
+                    Downloader
+                </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="/api/download/instagram?url=">Instagram DL</a></li>
+                <li><a href="#">YouTube MP3</a></li>
+                <li><a href="#">TikTok DL</a></li>
+            </ul>
+        </li>
+
+        <!-- Maker -->
+        <li>
+            <a class="has-submenu">
+                <span>
+                    <i class="fas fa-pencil-alt"></i>
+                    Maker
+                </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="/api/glowtext?text=hai&apikey=">Glow Text</a></li>
+                <li><a href="#">Meme Generator</a></li>
+                <li><a href="#">QR Code Maker</a></li>
+            </ul>
+        </li>
+
+        <!-- Search Tools -->
+        <li>
+            <a class="has-submenu">
                 <span>
                     <i class="fas fa-search"></i>
                     Search Tools
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </div>
+                </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="#">Google Reverse Image</a></li>
+                <li><a href="#">Instagram User Lookup</a></li>
+                <li><a href="#">YouTube Video Search</a></li>
+            </ul>
+        </li>
+
+        <!-- Tools -->
+        <li>
+            <a class="has-submenu">
+                <span>
+                    <i class="fas fa-tools"></i>
+                    Tools
+                </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="#">IP Address Checker</a></li>
+                <li><a href="#">Password Generator</a></li>
+                <li><a href="#">Base64 Encoder/Decoder</a></li>
+            </ul>
+        </li>
+
+        <!-- AI -->
+        <li>
+            <a class="has-submenu">
+                <span>
+                    <i class="fas fa-robot"></i>
+                    AI
+                </span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="#">AI Chatbot</a></li>
+                <li><a href="#">AI Image Generator</a></li>
+                <li><a href="#">AI Text Summarizer</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
 
     <div class="mt-auto">
         <a href="/" class="logout-btn">
@@ -448,7 +506,7 @@
         <!-- Chart Container -->
         <div class="chart-container">
             <h3>Request History</h3>
-            <canvas id="performanceChart"></canvas>
+            <canvas id="chartCanvas"></canvas>
         </div>
     </div>
 
