@@ -15,6 +15,22 @@
         "fs-extra": "^11.1.1",
         "jsonwebtoken": "^9.0.0",
         "node-fetch": "^3.3.1",
-        "path": "^0.12.7"
+        "path": "^0.12.7",      
+    "cheerio": "^1.0.0",
+    "form-data": "^4.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0",
+    "human-readable": "^0.2.1",
+    "puppeteer-core": "^24.2.0",
+    "@sparticuz/chromium": "^132.0.0",
+    "stream": "^0.0.3",
+    "ical": "^0.8.0",
+    "jimp": "^0.22.10",
+    "qrcode": "^1.5.4",
+    "qrcode-with-logos": "^1.0.3",
+    "request": "^2.88.2",
+    "tiktokdl": "^0.0.5", 
+    "canvas": "latest"
     }
 }
