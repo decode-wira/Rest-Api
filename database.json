@@ -1,1 +1,17 @@
-[]
+{
+  "users": [
+    {
+      "username": "Line Hai",
+      "password": "$2a$10$VjObtP1Dv2eK3xp0tXtf8eY/AxQrBu..toRji/F.yL8EJRlxWWDui",
+      "apikey": "d6a526451492be23e7b9d6dad20e4c61",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-16",
+      "createdAt": "2025-02-16T00:59:30.625Z"
+    }
+  ],
+  "historyRequest": {},
+  "count": 0,
+  "visitor": 0,
+  "deposits": []
+}
