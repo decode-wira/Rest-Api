@@ -4,7 +4,7 @@
       "username": "Hai Cipay",
       "password": "$2a$10$BbbLz6abmhANRkCMqSIWzeQ2x8Im89xsY4xFfjYBBzR4SlIZoN6T.",
       "apikey": "9337c1538eac1a194776119d86b97501",
-      "limit": 1496,
+      "limit": 1495,
       "premium": true,
       "lastReset": "2025-02-17",
       "createdAt": "2025-02-16T02:13:45.523Z"
@@ -57,9 +57,9 @@
   ],
   "historyRequest": {
     "2025-02-16": 6,
-    "2025-02-17": 4
+    "2025-02-17": 5
   },
-  "count": 10,
+  "count": 11,
   "visitor": 79,
   "deposits": []
 }
