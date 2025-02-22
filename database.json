@@ -53,6 +53,15 @@
       "premium": false,
       "lastReset": "2025-02-17",
       "createdAt": "2025-02-17T06:15:22.480Z"
+    },
+    {
+      "username": "Lineee",
+      "password": "$2a$10$qiSTHl4Ov07BZtjpBbwuWeFo0O5IlPSSWl.WO3Kt9b0E4x9Dt8lUu",
+      "apikey": "08d82ef7dd20c75717ee9624d604a2ab",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-22",
+      "createdAt": "2025-02-22T12:18:56.054Z"
     }
   ],
   "historyRequest": {
