@@ -62,6 +62,15 @@
       "premium": false,
       "lastReset": "2025-02-22",
       "createdAt": "2025-02-22T12:18:56.054Z"
+    },
+    {
+      "username": "Call Wira",
+      "password": "$2a$10$AzDsmfq3eVfBA64.Md3J6OcNQ1/3QI9fb7YA9lX2GBO71KvYXVENG",
+      "apikey": "55676ea3319a3e788840c2701c1a5b04",
+      "limit": 100,
+      "premium": false,
+      "lastReset": "2025-02-22",
+      "createdAt": "2025-02-22T13:50:32.169Z"
     }
   ],
   "historyRequest": {
