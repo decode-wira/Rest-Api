@@ -81,9 +81,9 @@
       "limit": 100,
       "plan": "basic",
       "planExpiresAt": "2025-03-03T12:10:00.444Z",
-      "emailVerified": false,
-      "otp": "922357",
-      "otpExpiration": "2025-02-24T12:25:00.443Z",
+      "emailVerified": true,
+      "otp": null,
+      "otpExpiration": null,
       "createdAt": "2025-02-24T12:10:00.444Z"
     }
   ],
