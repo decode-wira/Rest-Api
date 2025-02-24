@@ -71,6 +71,20 @@
       "premium": false,
       "lastReset": "2025-02-22",
       "createdAt": "2025-02-22T13:50:32.169Z"
+    },
+    {
+      "username": "Wira 123",
+      "password": "$2a$10$0r/YIl4dBWymOe78H3sFA.a2U8rhOtmwIcs4yXo42sIvj5562O/kC",
+      "email": "tampanwira53@gmail.com",
+      "phone": "083879152564",
+      "apikey": "049ec51ab7f948a5c51012aff93f5d64",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": "2025-03-03T12:08:57.530Z",
+      "emailVerified": false,
+      "otp": "888566",
+      "otpExpiration": "2025-02-24T12:23:57.529Z",
+      "createdAt": "2025-02-24T12:08:57.530Z"
     }
   ],
   "historyRequest": {
