@@ -71,20 +71,6 @@
       "premium": false,
       "lastReset": "2025-02-22",
       "createdAt": "2025-02-22T13:50:32.169Z"
-    },
-    {
-      "username": "Hai Wak",
-      "password": "$2a$10$jlo7bIX1auXQeteng5./YekZUji0KeFWvW28FZrg1WyvYYvzh9gfK",
-      "email": "tampanwira53@gmail.com",
-      "phone": "083879152564",
-      "apikey": "99fb1db73d8e0053066a2dace0959d03",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": "2025-03-03T11:57:11.417Z",
-      "emailVerified": false,
-      "otp": "899960",
-      "otpExpiration": "2025-02-24T12:12:11.417Z",
-      "createdAt": "2025-02-24T11:57:11.417Z"
     }
   ],
   "historyRequest": {
