@@ -85,6 +85,20 @@
       "otp": null,
       "otpExpiration": null,
       "createdAt": "2025-02-24T12:10:00.444Z"
+    },
+    {
+      "username": "Pentol",
+      "password": "$2a$10$5Z61Y0J7aicUTAo9lam9nO31krdilNAaDswEggOvQDyS2rs/4Ulfm",
+      "email": "wiraliwirya222210@gmail.com",
+      "phone": "083879152563",
+      "apikey": "c3388e8c01daed5d4d1057f16bd6436b",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "otp": "102260",
+      "otpExpiration": "2025-02-24T13:04:14.889Z",
+      "createdAt": "2025-02-24T12:49:14.891Z"
     }
   ],
   "historyRequest": {
