@@ -71,48 +71,6 @@
       "premium": false,
       "lastReset": "2025-02-22",
       "createdAt": "2025-02-22T13:50:32.169Z"
-    },
-    {
-      "username": "Wira 123",
-      "password": "$2a$10$4zXI/wBeZKsWsFkxlY6JhevHdSVoGyRGoT1ZecuD4iGx6djTJVAAS",
-      "email": "tampanwira53@gmail.com",
-      "phone": "083879152564",
-      "apikey": "1c85301a164adc18af49549127cb8902",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": "2025-03-03T12:10:00.444Z",
-      "emailVerified": true,
-      "otp": null,
-      "otpExpiration": null,
-      "createdAt": "2025-02-24T12:10:00.444Z"
-    },
-    {
-      "username": "Pentol",
-      "password": "$2a$10$5Z61Y0J7aicUTAo9lam9nO31krdilNAaDswEggOvQDyS2rs/4Ulfm",
-      "email": "wiraliwirya222210@gmail.com",
-      "phone": "083879152563",
-      "apikey": "c3388e8c01daed5d4d1057f16bd6436b",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "otp": null,
-      "otpExpiration": null,
-      "createdAt": "2025-02-24T12:49:14.891Z"
-    },
-    {
-      "username": "Lol Wira",
-      "password": "$2a$10$U.GQHPCtM1wzRCf5AYRkRu0WW9kSahYYcV/Q2aCLKhtOnoQY897cq",
-      "email": "catanyuni@gmail.com",
-      "phone": "083879152562",
-      "apikey": "8414c11f0d89b5054bbfb84aa11926e2",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "otp": null,
-      "otpExpiration": null,
-      "createdAt": "2025-02-25T13:29:07.474Z"
     }
   ],
   "historyRequest": {
