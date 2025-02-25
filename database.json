@@ -110,8 +110,8 @@
       "plan": "basic",
       "planExpiresAt": null,
       "emailVerified": false,
-      "otp": 660436,
-      "otpExpiration": "2025-02-25T13:39:53.957Z",
+      "otp": 150787,
+      "otpExpiration": "2025-02-25T13:41:35.523Z",
       "createdAt": "2025-02-25T13:29:07.474Z"
     }
   ],
