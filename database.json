@@ -16,6 +16,23 @@
       "createdAt": "2025-02-26T06:12:30.974Z",
       "otp": null,
       "otpExpiration": null
+    },
+    {
+      "id": "3b59fa3e-73de-41b1-a1d1-f241af1b2b70",
+      "username": "Lol Wira",
+      "password": "$2a$10$.Vh2AsDwoxySlyf7YZ93YuY8cDa6MjVvFvJv.3Ah//doUW9MWEWR6",
+      "email": "catanyuni@gmail.com",
+      "phone": "083879152563",
+      "apikey": "adf792f7bf688664fc6f080473c062ec",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-02-26T06:13:12.392Z",
+      "otp": "165407",
+      "otpExpiration": "2025-02-26T06:28:12.392Z"
     }
   ],
   "historyRequest": {
