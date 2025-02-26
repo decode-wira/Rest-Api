@@ -71,20 +71,6 @@
       "premium": false,
       "lastReset": "2025-02-22",
       "createdAt": "2025-02-22T13:50:32.169Z"
-    },
-    {
-      "username": "Lol Wira",
-      "password": "$2a$10$i7SiG7VK2UFodX2omPM1/OHR.yTl7OP.49blWlOJ9UWhdgGn0H9iK",
-      "email": "tampanwira53@gmail.com",
-      "phone": "083879152564",
-      "apikey": "a3fedc5233212490ec6e196230d30406",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "otp": null,
-      "otpExpiration": null,
-      "createdAt": "2025-02-25T13:46:12.567Z"
     }
   ],
   "historyRequest": {
