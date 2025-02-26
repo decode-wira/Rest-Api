@@ -1,5 +1,22 @@
 {
   "users": [
+    {
+      "id": "3fe7d1ec-71c8-45a8-a25d-73dd45ade32b",
+      "username": "Wira Admin",
+      "password": "$2a$10$6K.K2SLbm2o3Zuuc.Z/KmuTgyOmUnYlC3qUdTffWIG/TDD7OdULhm",
+      "email": "tampanwira53@gmail.com",
+      "phone": "083879152564",
+      "apikey": "cefe8521d8a6e90c02ae32b551cb71b8",
+      "limit": 9007199254740991,
+      "plan": "owner",
+      "planExpiresAt": null,
+      "emailVerified": true,
+      "isAdmin": true,
+      "isOwner": true,
+      "createdAt": "2025-02-26T05:04:19.661Z",
+      "otp": null,
+      "otpExpiration": null
+    }
   ],
   "historyRequest": {
     "2025-02-16": 6,
