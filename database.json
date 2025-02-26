@@ -1,19 +1,5 @@
 {
   "users": [
-    {
-      "username": "Lol Wira",
-      "password": "$2a$10$t6tm1pgOQ0e8qRj4tmo04ecHBLIIuoahELZm9ntIU2Q.gRGEXjEFq",
-      "email": "tampanwira53@gmail.com",
-      "phone": "083879152564",
-      "apikey": "903b1d53b9cabc515d4155c2ef4c44a8",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "otp": null,
-      "otpExpiration": null,
-      "createdAt": "2025-02-26T04:46:07.385Z"
-    }
   ],
   "historyRequest": {
     "2025-02-16": 6,
