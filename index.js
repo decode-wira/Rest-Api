@@ -4,21 +4,12 @@ const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { canvas, registerFont, createCanvas } = require('canvas');
-const chromium = require('@sparticuz/chromium');
-const puppeteer = require('puppeteer-core');
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 app.use(express.static("public"));
-
-// =====
-
-const { BingImageSearch, searchWikipedia,
-bingSearch, bingVideoSearch, pinterest, Cerpen, processImage, downloadInstagram, terabox, generateImageWithText, spotifySearch, profileImg, Search1, capcudl, douyindl, spotifydl, pindl, mediafiredl, GDrive, CatBox, takeScreenshot, wikiImage, sfilesrc, srcLyrics, videydl, igstalk, npmStalk, komiktapsrc, komiktapsrcq, SimSimi } = require('./lib/function')
-
-// =====
 
 // Konfigurasi environment variables
 const GITHUB_TOKEN = "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";
@@ -27,6 +18,26 @@ const REPO_NAME = "Rest-Api";
 const FILE_PATH = "database.json";
 const API_KEY = "sk-9xykbw8sdn2xrm";
 const JWT_SECRET = "CALLLINE";
+const EMAIL_USER = "lineaja03@gmail.com";
+const EMAIL_PASS = "zlqt dptn knxm xmym";
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
+  }
+});
+
+const PLANS = {
+  basic: { limit: 100, duration: null },
+  standard: { limit: 500, duration: 15 },
+  premium: { limit: 1500, duration: 30 }
+};
+
+function generateOTP() {
+  return crypto.randomInt(100000, 999999).toString();
+}
 
 const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 const HEADERS = {
@@ -36,11 +47,15 @@ const HEADERS = {
 
 // Struktur database default
 const DEFAULT_DB = {
-    users: [],
+    users: [{
+    isAdmin: false,
+    isBanned: false,
+    banExpiresAt: null
+  }],
     historyRequest: {},
     count: 0,
     visitor: 0,
-    deposits: []
+    deposits: [],
 };
 
 // Helper functions
@@ -108,6 +123,9 @@ function authenticateToken(req, res, next) {
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.status(403).json({ message: "Token tidak valid!" });
+        if (user.isOwner) {
+      user.isAdmin = true; // Owner selalu admin
+    }
         req.user = user;
         next();
     });
@@ -137,7 +155,7 @@ async function updateUsage(apikey) {
     }
 
     // Kurangi limit
-    user.limit -= 1;
+    user.limit -= 1; // Bebas Kurangin Limit Ketika Respon Succes
     db.count = (db.count || 0) + 1;
     db.historyRequest[today] = (db.historyRequest[today] || 0) + 1;
 
@@ -158,6 +176,13 @@ async function tambahPengunjung() {
     }
 }
 
+function requireOwner(req, res, next) {
+  if (!req.user.isOwner) {
+    return res.status(403).json({ message: "Hanya owner yang dapat mengakses ini" });
+  }
+  next();
+}
+
 // Routes
 app.get("/", async (req, res) => {
     const db = await getDatabase();
@@ -175,8 +200,16 @@ app.get("/auth/register", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "daftar.html"));
 });
 
+app.get("/auth/verif", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "verif.html"));
+});
+
 app.get("/auth/login", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
+app.get("/deposit", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "kurva.html"));
 });
 
 app.get("/user/profile", (req, res) => {
@@ -197,115 +230,355 @@ app.get("/user/upgrade", (req, res) => {
 
 // Api Utama ( Jangan Otak Atik )
 
+// Routes
 app.post("/api/register", databaseMiddleware, async (req, res) => {
-    const { username, password } = req.body;
+  const { username, password, email, phone } = req.body;
+  const isFirstUser = req.db.users.length === 0;
+
+  if (!username || !password || !email || !phone) {
+    return res.status(400).json({ message: "Semua field harus diisi" });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Format email tidak valid" });
+  }
+
+  if (req.db.users.some(u => u.email === email)) {
+    return res.status(409).json({ message: "Email sudah terdaftar" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let otp = null;
+    let otpExpiration = null;
+
+    // Hanya generate OTP untuk user non-owner
+    if (!isFirstUser) {
+      otp = generateOTP();
+      otpExpiration = new Date(Date.now() + 15 * 60 * 1000);
+    }
+
+    const newUser = {
+      id: crypto.randomUUID(),
+      username,
+      password: hashedPassword,
+      email,
+      phone,
+      apikey: crypto.randomBytes(16).toString("hex"),
+      limit: isFirstUser ? Number.MAX_SAFE_INTEGER : PLANS.basic.limit,
+      plan: isFirstUser ? 'owner' : 'basic',
+      planExpiresAt: null,
+      emailVerified: isFirstUser, // Owner langsung terverifikasi
+      isAdmin: isFirstUser,
+      isOwner: isFirstUser,
+      createdAt: new Date().toISOString(),
+      otp,
+      otpExpiration
+    };
+
+    // Pengaturan email berdasarkan tipe user
+    if (isFirstUser) {
+      const mailOptions = {
+        from: EMAIL_USER,
+        to: email,
+        subject: 'Owner Account Created',
+        html: `<h1>Owner Account Details</h1>
+              <p>Username: ${username}</p>
+              <p>Password: ${password}</p>
+              <p>API Key: ${newUser.apikey}</p>`
+      };
+      await transporter.sendMail(mailOptions);
+    } else {
+      const mailOptions = {
+        from: EMAIL_USER,
+        to: email,
+        subject: 'Verifikasi Email',
+        html: `<p>Kode OTP Anda: ${otp}</p>`
+      };
+      await transporter.sendMail(mailOptions);
+    }
+
+    req.db.users.push(newUser);
+    await saveDatabase(req.db);
+
+    res.status(201).json({
+      message: isFirstUser ? "Owner account created successfully" : "Registrasi berhasil, silakan verifikasi email",
+      email: newUser.email
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Gagal melakukan registrasi" });
+  }
+});
+
+app.post("/api/verify-email", databaseMiddleware, async (req, res) => {
+  const { email, otp } = req.body;
+  const user = req.db.users.find(u => u.email === email);
+
+  if (!user) {
+    return res.status(404).json({ message: "Email tidak ditemukan" });
+  }
+
+  // Jika user adalah owner atau sudah terverifikasi
+  if (user.emailVerified) {
+    return res.status(400).json({ message: "Email sudah terverifikasi" });
+  }
+
+  // Validasi OTP hanya untuk user non-owner
+  if (!user.otp || !user.otpExpiration) {
+    return res.status(400).json({ message: "OTP belum dikirim, silakan minta ulang" });
+  }
+
+  if (new Date() > new Date(user.otpExpiration)) {
+    return res.status(400).json({ message: "Kode OTP telah kadaluarsa, silakan minta ulang" });
+  }
+
+  if (user.otp !== otp) {
+    return res.status(400).json({ message: "Kode OTP tidak valid" });
+  }
+
+  user.emailVerified = true;
+  user.otp = null;
+  user.otpExpiration = null;
+  await saveDatabase(req.db);
+
+  res.json({ message: "Email berhasil diverifikasi" });
+});
+
+// Endpoint untuk mengirim ulang OTP
+app.post("/api/resend-otp", databaseMiddleware, async (req, res) => {
+  const { email } = req.body;
+  const user = req.db.users.find(u => u.email === email);
+
+  if (!user) {
+    return res.status(404).json({ message: "Email tidak terdaftar" });
+  }
+
+  if (user.emailVerified) {
+    return res.status(400).json({ message: "Email sudah terverifikasi" });
+  }
+
+  const newOTP = generateOTP();
+  const otpExpiration = new Date(Date.now() + 15 * 60 * 1000);
+
+  try {
+    const mailOptions = {
+      from: EMAIL_USER,
+      to: email,
+      subject: 'Kode OTP Baru',
+  text: `Kode OTP baru Anda: ${newOTP}`,
+  html: `
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Verifikasi Email</title>
+      <style>
+          body {
+              margin: 0;
+              padding: 0;
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+          }
+          .container {
+              max-width: 600px;
+              margin: 20px auto;
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              overflow: hidden;
+          }
+          .header {
+              background-color: #007bff;
+              padding: 20px;
+              text-align: center;
+          }
+          .header h1 {
+              color: #ffffff;
+              margin: 0;
+              font-size: 24px;
+          }
+          .content {
+              padding: 30px;
+              text-align: center;
+          }
+          .content p {
+              font-size: 16px;
+              color: #333333;
+              line-height: 1.5;
+          }
+          .otp-code {
+              font-size: 32px;
+              color: #007bff;
+              font-weight: bold;
+              margin: 20px 0;
+          }
+          .button {
+              display: inline-block;
+              padding: 12px 25px;
+              margin: 20px 0;
+              background-color: #007bff;
+              color: #ffffff;
+              text-decoration: none;
+              border-radius: 5px;
+              font-size: 16px;
+          }
+          .footer {
+              background-color: #f4f4f4;
+              padding: 15px;
+              text-align: center;
+              font-size: 12px;
+              color: #999999;
+          }
+          @media only screen and (max-width: 600px) {
+              .container {
+                  width: 100%;
+                  margin: 10px;
+              }
+              .header h1 {
+                  font-size: 20px;
+              }
+              .content p, .button {
+                  font-size: 14px;
+              }
+              .otp-code {
+                  font-size: 28px;
+              }
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <div class="header">
+              <h1>Verifikasi Email Anda</h1>
+          </div>
+          <div class="content">
+              <p>Terima kasih telah mendaftar. Gunakan kode OTP di bawah ini untuk memverifikasi email Anda:</p>
+              <div class="otp-code">${newOTP}</div>
+              <p>Kode OTP ini berlaku selama 10 menit. Jika Anda tidak melakukan permintaan ini, harap abaikan email ini.</p>
+              <a href="https://https://api-linecloud.digital-server.biz.id/auth/verify" class="button">Verifikasi Sekarang</a>
+              <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+              <p style="font-size: 12px;">Jika ada pertanyaan, silakan hubungi kami di <a href="mailto:wiraliwirya222210@gmail.com" style="color: #007bff; text-decoration: none;">support@yourdomain.com</a></p>
+          </div>
+          <div class="footer">
+              &copy; ${new Date().getFullYear()} Your Company. All rights reserved.
+          </div>
+      </div>
+  </body>
+  </html>
+  `
+    };
     
-    if (!username || !password) {
-        return res.status(400).json({ message: "Username dan password diperlukan" });
-    }
+    await transporter.sendMail(mailOptions);
+    
+    user.otp = newOTP;
+    user.otpExpiration = otpExpiration;
+    await saveDatabase(req.db);
 
-    if (req.db.users.some(u => u.username === username)) {
-        return res.status(409).json({ message: "Username sudah terdaftar" });
-    }
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = {
-            username,
-            password: hashedPassword,
-            apikey: require("crypto").randomBytes(16).toString("hex"),
-            limit: 100,
-            premium: false,
-            lastReset: getTodayDate(),
-            createdAt: new Date().toISOString()
-        };
-
-        req.db.users.push(newUser);
-        await saveDatabase(req.db);
-
-        res.status(201).json({
-            message: "Registrasi berhasil",
-            apikey: newUser.apikey
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Gagal melakukan registrasi" });
-    }
+    res.json({ message: "OTP baru telah dikirim ke email Anda" });
+  } catch (error) {
+    res.status(500).json({ message: "Gagal mengirim OTP" });
+  }
 });
 
 app.post("/api/login", databaseMiddleware, async (req, res) => {
-    const { username, password } = req.body;
-    const user = req.db.users.find(u => u.username === username);
+  const { email, password } = req.body;
+  const user = req.db.users.find(u => u.email === email);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ message: "Kredensial tidak valid" });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ message: "Kredensial tidak valid" });
+  }
+
+  if (!user.emailVerified && !user.isOwner) {
+    return res.status(403).json({ message: "Email belum diverifikasi" });
+  }
+
+  const token = jwt.sign(
+    { userId: user.apikey, email: user.email, plan: user.plan },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  res.json({
+    message: "Login berhasil",
+    token,
+    user: {
+      username: user.username,
+      email: user.email,
+      apikey: user.apikey,
+      limit: user.limit,
+      plan: user.plan,
+      isAdmin: user.isAdmin,
+      isOwner: user.isOwner,
+      planExpiresAt: user.planExpiresAt
     }
-
-    const token = jwt.sign(
-        { userId: user.apikey, username: user.username },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-    );
-
-    res.json({ 
-        message: "Login berhasil",
-        token,
-        user: {
-            username: user.username,
-            apikey: user.apikey,
-            limit: user.limit,
-            premium: user.premium
-        }
-    });
+  });
 });
 
 app.get("/api/profile", authenticateToken, databaseMiddleware, async (req, res) => {
-    const user = req.db.users.find(u => u.apikey === req.user.userId);
-    
-    if (!user) {
-        return res.status(404).json({ message: "Pengguna tidak ditemukan" });
-    }
+  const user = req.db.users.find(u => u.apikey === req.user.userId);
 
-    res.json({
-        username: user.username,
-        apikey: user.apikey,
-        limit: user.limit,
-        premium: user.premium,
-        registeredAt: user.createdAt
-    });
+  if (!user) {
+    return res.status(404).json({ message: "Pengguna tidak ditemukan" });
+  }
+
+  const baseProfile = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    phone: user.phone,
+    apikey: user.apikey,
+    limit: user.limit,
+    plan: user.plan,
+    registeredAt: user.createdAt
+  };
+
+  const ownerProfile = {
+    ...baseProfile,
+    isOwner: true,
+    apikey: user.apikey,
+    totalUsers: req.db.users.length,
+    systemStatus: "active"
+  };
+
+  const regularProfile = {
+    ...baseProfile,
+    ...(user.plan !== 'basic' && { planExpiresAt: user.planExpiresAt })
+  };
+
+  res.json(user.isOwner ? ownerProfile : regularProfile);
 });
 
-app.post("/api/upgrade-premium", async (req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: "Token tidak ditemukan!" });
-    }
+app.post("/api/upgrade-plan", authenticateToken, databaseMiddleware, async (req, res) => {
+  const { plan } = req.body;
+  const user = req.db.users.find(u => u.apikey === req.user.userId);
 
-    try {
-        const decoded = jwt.verify(token.replace("Bearer ", ""), JWT_SECRET); // Diperbaiki menggunakan JWT_SECRET
-        const database = await getDatabase();
-        const user = database.users.find((u) => u.username === decoded.username);
+  if (!PLANS[plan]) {
+    return res.status(400).json({ message: "Plan tidak valid" });
+  }
 
-        if (!user) {
-            return res.status(404).json({ message: "User tidak ditemukan!" });
-        }
+  const newExpiry = plan === 'basic' 
+    ? null 
+    : new Date(Date.now() + PLANS[plan].duration * 86400000);
 
-        if (user.premium) {
-            return res.status(400).json({ message: "Akun sudah premium!" });
-        }
+  user.plan = plan;
+  user.limit = PLANS[plan].limit;
+  user.planExpiresAt = newExpiry;
 
-        user.premium = true;
-        user.limit = 10.000;
-        await saveDatabase(database);
+  if (plan !== 'basic') {
+    user.apikey = crypto.randomBytes(16).toString("hex");
+  }
 
-        res.json({ 
-            message: "Akun berhasil di-upgrade ke premium!", 
-            premium: true, 
-            limit: user.limit,
-            newApiKey: user.apikey // Tambahan informasi API key
-        });
-    } catch (error) {
-        return res.status(403).json({ message: "Token tidak valid!" });
-    }
+  await saveDatabase(req.db);
+
+  res.json({
+    message: `Upgrade ke plan ${plan} berhasil`,
+    newApiKey: plan !== 'basic' ? user.apikey : undefined,
+    plan: user.plan,
+    limit: user.limit,
+    planExpiresAt: user.planExpiresAt
+  });
 });
 
 app.get("/api/history-request", async (req, res) => {
@@ -408,703 +681,20 @@ app.get("/api/deposit/status/:id", async (req, res) => {
     }
 });
 
-// Nah Ini Bagian End Point
+// End Point
 
-// == Search
+app.use('/api/payment', require('./api/orkut'));
 
-const apiKey = 'AIzaSyAajE2Y-Kgl8bjPyFvHQ-PgRUSMWgBEsSk';
-const cx = 'e5c2be9c3f94c4bbb';
-
-app.get('/api/search/google', async (req, res) => {
-    const { text, apikey } = req.query;
-    
-    if (!text) return res.status(400).json({ status: false, data: 'Contoh penggunaan: ?text=halo' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const query = encodeURIComponent(text);
-    const url = `https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}`;
-
-    try {
-        const response = await axios.get(url);
-        const items = response.data.items || [];
-
-        res.json({
-            status: true,
-            creator: "Hello Line",
-            data: items.map(item => ({
-                title: item.title,
-                description: item.snippet,
-                link: item.link,
-            })),
-        });
-    } catch (err) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: err.message });
-    }
-});
-
-app.get('/api/search/images', async (req, res) => {
-    const { text, apikey } = req.query;
-    
-    if (!text) return res.status(400).json({ status: false, data: 'Isi parameter text' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const query = encodeURIComponent(text);
-    const randomStartIndex = Math.floor(Math.random() * 90) + 1;
-    const url = `https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}&searchType=image&num=10&start=${randomStartIndex}`;
-
-    try {
-        const response = await axios.get(url);
-        const items = response.data.items || [];
-
-        res.json({
-            status: true,
-            creator: "Hello Line",
-            data: items.map(item => ({
-                title: item.title,
-                image: item.link,
-                contextLink: item.image.contextLink,
-                thumbnail: item.image.thumbnailLink,
-            })),
-        });
-    } catch (err) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: err.message });
-    }
-});
-
-app.get('/api/search/pinterest', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ error: 'Isi Parameter Query' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const images = await pinterest(query);
-        if (images.length > 0) {
-            return res.json({ status: true, creator: "Hello Line", data: images });
-        } else {
-            return res.status(404).json({ status: false, creator: "Hello Line", message: 'No images found' });
+app.get('/api/total-endpoints', (req, res) => {
+    let total = 0;
+    app._router.stack.forEach(layer => {
+        if (layer.route) {
+            total++;
+        } else if (layer.handle && layer.handle.stack) {
+            total += layer.handle.stack.filter(r => r.route).length;
         }
-    } catch (error) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
-});
-
-app.get('/api/search/bingimg', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ status: false, creator: "Hello Line", error: "Isi parameter Query." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const images = await BingImageSearch(query);
-        return res.json({ status: true, creator: "Hello Line", data: images });
-    } catch (error) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
-});
-
-app.get('/api/search/bingsearch', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ status: false, creator: "Hello Line", error: "Isi parameter query" });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const results = await bingSearch(query);
-        res.status(200).json({ status: true, creator: "Hello Line", data: results });
-    } catch (error) {
-        res.status(500).json({ status: false, creator: "Hello Line", error: error.message || 'Error performing Bing search' });
-    }
-});
-
-app.get('/api/search/bingvid', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ status: false, creator: "Hello Line", error: "Query is required" });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const results = await bingVideoSearch(query);
-        res.status(200).json({ status: true, creator: "Hello Line", data: results });
-    } catch (error) {
-        res.status(500).json({ status: false, creator: "Hello Line", error: error.message || 'Error performing Bing video search' });
-    }
-});
-
-app.get('/api/search/wiki', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ status: false, error: "Isi parameter Query." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const searchResults = await searchWikipedia(query);
-        return res.json({ status: true, creator: "Hello Line", data: searchResults });
-    } catch (error) {
-        return res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-app.get('/api/search/wikiimage', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ error: 'Parameter "query" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const result = await wikiImage(query);
-        res.json({ status: true, creator: "Hello Line", data: result });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-app.get('/api/search/lyrics', async (req, res) => {
-    const { song, apikey } = req.query;
-
-    if (!song) return res.status(400).json({ error: 'Parameter "song" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const result = await srcLyrics(song);
-        res.json({ status: true, creator: "Hello Line", data: result });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-app.get('/api/search/sfile', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ error: 'Parameter "query" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const result = await sfilesrc(query);
-        res.json({ status: true, creator: "Hello Line", data: result });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-app.get('/api/search/pixabay', async (req, res) => {
-    const { query, apikey } = req.query;
-
-    if (!query) return res.status(400).json({ status: false, error: "Isi parameter Query." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const response = await axios.get('https://pixabay.com/api/', {
-            params: {
-                key: '47718946-26aab78979a05a0ee8db4190d', // Ganti dengan API Key Anda
-                q: query,
-                image_type: 'photo',
-            }
-        });
-
-        if (response.data.hits.length === 0) {
-            return res.status(404).json({ status: false, error: "Tidak ditemukan gambar." });
-        }
-
-        const randomIndex = Math.floor(Math.random() * response.data.hits.length);
-        const imageUrl = response.data.hits[randomIndex].webformatURL;
-
-        const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-        const contentType = imageResponse.headers['content-type']; 
-        res.set('Content-Type', contentType); 
-        return res.send(imageResponse.data);
-    } catch (error) {
-        return res.status(500).json({ status: false, error: "Terjadi kesalahan saat memproses permintaan." });
-    }
-});
-
-app.get('/api/search/cerpen', async (req, res) => {
-    const { category, apikey } = req.query;
-
-    if (!category) {
-        return res.status(400).json({ status: false, creator: "Hello Line", error: "Isi parameter Category." });
-    }
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const cerpen = await Cerpen(category);
-        return res.json({ status: true, creator: "Hello Line", data: cerpen });
-    } catch (error) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
-});
-
-app.get('/api/search/spotify', async (req, res) => {
-    const { q, apikey } = req.query;
-
-    if (!q) return res.status(400).json({ error: 'Parameter "q" dibutuhkan' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const results = await spotifySearch(q);
-        res.json(results);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-app.get('/api/search/komiktap', async (req, res) => {
-    const { apikey } = req.query;
-
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await komiktapsrc();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.get('/api/search/komiktaps', async (req, res) => {
-    const { q, apikey } = req.query;
-
-    if (!q) return res.status(400).json({ error: 'Parameter "q" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await komiktapsrcq(q);
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// === Download
-
-app.get("/api/download/tiktok", async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-  if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const { tiktokdl } = require("tiktokdl");
-    const data = await tiktokdl(url);
-    if (!data) return res.status(404).json({ error: "Data tidak ditemukan." });
-
-    res.json({ status: true, creator: "Hello Line", result: data });
-  } catch (e) {
-    res.status(500).json({ error: "Terjadi kesalahan pada server." });
-  }
-});
-
-app.get('/api/download/douyin', async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!url) return res.status(400).json({ error: "Parameter 'url' diperlukan." });
-  if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const data = await douyindl(url);
-    if (data.error) return res.status(400).json(data);
-
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan pada server." });
-  }
-});
-
-app.get('/api/download/spotify', async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-  if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const data = await spotifydl(url);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan pada server." });
-  }
-});
-
-app.get('/api/download/pinterest', async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-  if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const data = await pindl(url);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan pada server." });
-  }
-});
-
-app.get('/api/download/videydl', async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-  if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    const videoUrl = await videydl(url);
-    res.json({ videoUrl });
-  } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan pada server." });
-  }
-});
-
-app.get('/api/download/mediafire', async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await mediafiredl(url);
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.get('/api/download/gdrive', async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await GDrive(url);
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.get('/api/download/capcut', async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ error: 'Parameter "url" diperlukan.' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await capcutdl(url);
-        if (data) {
-            res.json(data);
-        } else {
-            res.status(404).json({ error: 'Data tidak ditemukan atau gagal mengambil data.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Terjadi kesalahan pada server.' });
-    }
-});
-
-app.get('/api/download/instagram', async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) {
-        return res.status(400).json({
-            status: false,
-            creator: "Hello Line",
-            error: "Parameter 'url' diperlukan.",
-        });
-    }
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await downloadInstagram(url);
-        if (data.status) {
-            res.status(200).json(data);
-        } else {
-            res.status(500).json(data);
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: false,
-            creator: "Hello Line",
-            error: error.message || 'Terjadi kesalahan saat memproses permintaan.',
-        });
-    }
-});
-
-app.get("/api/download/facebook", async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ status: false, creator: "Hello Line", error: "URL is required" });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const response = await axios.get(`https://api.vreden.web.id/api/fbdl?url=${url}`);
-        res.status(200).json({
-            status: true,
-            creator: "Hello Line",
-            data: response.data.data,
-        });
-    } catch (error) {
-        res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
-});
-
-app.get("/api/download/terabox", async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ status: false, creator: "Hello Line", error: "URL is required" });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-
-        const data = await terabox(url);
-        res.status(200).json({
-            status: true,
-            creator: "Hello Line",
-            data: data,
-        });
-    } catch (error) {
-        res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
-});
-
-// === Maker 
-
-app.get("/api/maker/glowtext", async (req, res) => {
-    const { text, apikey } = req.query;
-    if (!text) return res.status(400).json({ message: "Parameter 'text' diperlukan!" });
-    if (!apikey) return res.status(400).json({ message: "Parameter 'apikey' diperlukan!" });
-    try {
-        const result = await updateUsage(apikey);
-        if (!result.success) return res.status(403).json({ message: result.message });
-        const imageUrl = `https://dummyimage.com/500x500/ffffff/000000&text=${encodeURIComponent(text)}`;
-        const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-        const database = await getDatabase();
-        res.setHeader("Content-Type", "image/png");
-        res.setHeader("X-Total-Request", database.count || 0);
-        res.setHeader("X-Request-Today", database.historyRequest[getTodayDate()] || 0);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).json({ message: "Gagal mengambil gambar!", error: error.message });
-    }
-});
-
-app.get('/api/maker/brat', async (req, res) => {
-  const { text, apikey } = req.query;
-
-  if (!text) {
-    return res.status(400).json({ error: 'Parameter "text" wajib disertakan.' });
-  }
-
-  if (!apikey) {
-    return res.status(401).json({ error: 'API key diperlukan.' });
-  }
-
-  try {
-    const result = await updateUsage(apikey);
-    if (!result.success) {
-      return res.status(403).json({ message: result.message });
-    }
-
-    const imageBuffer = await generateImageWithText(text);
-    res.setHeader('Content-Type', 'image/png');
-    res.end(imageBuffer);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Terjadi kesalahan saat membuat gambar.' });
-  }
-});
-
-// == Ai 
-
-app.get('/api/ai/simsimi', async (req, res) => {
-    const { text, lang, apikey } = req.query;
-    if (!text || !apikey) {
-        return res.status(400).json({ success: false, message: 'Masukkan text dan apikey!' });
-    }
-    const checkKey = await updateUsage(apikey);
-    if (!checkKey.success) {
-        return res.status(403).json(checkKey);
-    }
-    try {
-        const response = await SimSimi(text, lang || 'id');
-        res.json({
-            success: true,
-            message: response
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Gagal mendapatkan respons dari SimSimi!' });
-    }
-});
-
-// == Tools
-
-app.get('/api/tools/ssweb', async (req, res) => {
-    const { url, apikey } = req.query;
-    
-    if (!url) return res.status(400).json({ error: 'Masukkan parameter url' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const browser = await puppeteer.launch({
-            args: chromium.args,
-            executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
-        });
-
-        const page = await browser.newPage();
-        await page.setViewport({ width: 480, height: 800, isMobile: true });
-        await page.goto(url, { waitUntil: 'load', timeout: 30000 });
-
-        const screenshotBuffer = await page.screenshot({ type: 'png' });
-        await browser.close();
-
-        const filename = `screenshot-${Date.now()}.png`;
-        const imageUrl = await CatBox(screenshotBuffer, filename);
-        res.redirect(imageUrl);
-    } catch (error) {
-        res.status(500).json({ error: 'Gagal mengambil screenshot', detail: error.message });
-    }
-});
-
-app.get('/api/tools/sswebv2', async (req, res) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ error: 'Masukkan parameter url' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const [urlHP, urlTab, urlDesk] = await Promise.all([
-            takeScreenshot(url, 480, 800, 'mobile'),
-            takeScreenshot(url, 800, 1280, 'tablet'),
-            takeScreenshot(url, 1024, 768, 'desktop')
-        ]);
-
-        res.json({ success: true, creator: "Hello Line", urlHP, urlTab, urlDesk });
-    } catch (error) {
-        res.status(500).json({ success: false, error: 'Gagal mengambil screenshot', detail: error.message });
-    }
-});
-
-const processImageHandler = async (req, res, type) => {
-    const { url, apikey } = req.query;
-
-    if (!url) return res.status(400).json({ error: `Parameter 'url' diperlukan.` });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const imageResponse = await axios.get(url, { responseType: 'arraybuffer' });
-        const imageBuffer = Buffer.from(imageResponse.data);
-        const processedImage = await processImage(imageBuffer, type);
-
-        res.setHeader('Content-Type', 'image/png');
-        res.send(processedImage);
-    } catch (error) {
-        res.status(500).json({ error: `Gagal memproses gambar (${type}).`, detail: error.message });
-    }
-};
-
-app.get('/api/tools/enhance', async (req, res) => processImageHandler(req, res, 'enhance'));
-app.get('/api/tools/dehaze', async (req, res) => processImageHandler(req, res, 'dehaze'));
-app.get('/api/tools/recolor', async (req, res) => processImageHandler(req, res, 'recolor'));
-
-app.get('/api/tools/cekip', async (req, res) => {
-    const { ip, apikey } = req.query;
-
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const url = ip ? `http://ip-api.com/json/${encodeURIComponent(ip)}` : `http://ip-api.com/json/`;
-        const response = await axios.get(url);
-
-        if (response.data.status === "fail") {
-            return res.status(400).json({ status: false, error: response.data.message || "Invalid IP address." });
-        }
-
-        res.json({ status: true, creator: "Hello Line", data: response.data });
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error.', detail: error.message });
-    }
+    });
+    res.send(total.toString());
 });
 
 // == End Wak
@@ -1114,23 +704,33 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
     // Jadwal reset limit harian
-    setInterval(async () => {
-        const db = await getDatabase();
-        const today = getTodayDate();
-        let needsUpdate = false;
-        
-        db.users = db.users.map(user => {
-            if (user.lastReset !== today) {
-                user.limit = user.premium ? 1500 : 100;
-                user.lastReset = today;
-                needsUpdate = true;
-            }
-            return user;
-        });
+setInterval(async () => {
+  const db = await getDatabase();
+  const today = new Date();
+  let needsUpdate = false;
 
-        if (needsUpdate) {
-            await saveDatabase(db);
-            console.log("Limit pengguna telah di-reset");
-        }
-    }, 86400000); // Setiap 1 jam
-});
+  db.users = db.users.map(user => {
+    // Reset limit harian
+    if (user.lastReset !== getTodayDate()) {
+      // Jika plan bukan basic dan sudah expired, downgrade ke basic
+      if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
+        user.plan = 'basic';
+        user.limit = PLANS.basic.limit;
+        user.planExpiresAt = null;
+      } else {
+        // Reset limit sesuai plan
+        user.limit = PLANS[user.plan].limit;
+      }
+      
+      user.lastReset = getTodayDate();
+      needsUpdate = true;
+    }
+    return user;
+  });
+
+  if (needsUpdate) {
+    await saveDatabase(db);
+    console.log("Limit dan plan pengguna telah di-update");
+  }
+}, 86400000);
+})
