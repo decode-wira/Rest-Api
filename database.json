@@ -1,39 +1,5 @@
 {
   "users": [
-    {
-      "id": "68f13738-0226-495c-b686-5f4f94d53be5",
-      "username": "Wira Admin",
-      "password": "$2a$10$SjDw7.Xq.fX82qBxtbnTFuUmDGrat8sJCPg9IBl794o2M2lpBhGUi",
-      "email": "tampanwira53@gmail.com",
-      "phone": "083879152564",
-      "apikey": "bc3a478ed72b2f39e5fbd60144e768ae",
-      "limit": 9007199254740991,
-      "plan": "owner",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "isAdmin": true,
-      "isOwner": true,
-      "createdAt": "2025-02-26T06:12:30.974Z",
-      "otp": null,
-      "otpExpiration": null
-    },
-    {
-      "id": "3b59fa3e-73de-41b1-a1d1-f241af1b2b70",
-      "username": "Lol Wira",
-      "password": "$2a$10$.Vh2AsDwoxySlyf7YZ93YuY8cDa6MjVvFvJv.3Ah//doUW9MWEWR6",
-      "email": "catanyuni@gmail.com",
-      "phone": "083879152563",
-      "apikey": "adf792f7bf688664fc6f080473c062ec",
-      "limit": 100,
-      "plan": "basic",
-      "planExpiresAt": null,
-      "emailVerified": true,
-      "isAdmin": false,
-      "isOwner": false,
-      "createdAt": "2025-02-26T06:13:12.392Z",
-      "otp": null,
-      "otpExpiration": null
-    }
   ],
   "historyRequest": {
     "2025-02-16": 6,
