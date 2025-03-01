@@ -3,355 +3,582 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Reset API</title>
+    <title>Registrasi - Modern Interface</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
+        /* Reset dan atur html, body */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --glass-bg: rgba(255, 255, 255, 0.96);
+    --input-focus: #818cf8;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --accent-color: #6366f1;
+    --error-color: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--primary-gradient);
+    position: relative;
+    /* overflow sudah diatur pada html dan body di atas */
+}
+
+.dynamic-bg {
+    position: fixed; /* Menggunakan fixed agar tetap di viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+}
+
+/* Elemen animasi dan blob */
+.animated-blob {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: float 20s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(100px, -50px) scale(1.1); }
+    50% { transform: translate(-50px, 75px) scale(0.9); }
+    75% { transform: translate(-100px, -30px) scale(1.05); }
+}
+
+/* Kontainer register */
+.register-container {
+    width: 460px;
+    padding: 40px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.register-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-            background-attachment: fixed;
+        .register-header h1 {
+            font-size: 2.75rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
         }
 
-        .register-container {
-            width: 400px;
-            padding: 40px 30px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
-            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        .register-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
             transition: transform 0.3s ease;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .input-wrapper:hover {
+            transform: translateX(8px);
         }
 
-        .register-container:hover {
-            transform: translateY(-5px);
-        }
-
-        .register-container h1 {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            color: #2d3748;
-            text-align: center;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
-        .input-group input {
+        .input-field {
             width: 100%;
-            padding: 14px 45px;
+            padding: 16px 52px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 14px;
             font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: #f8fafc;
+            caret-color: var(--accent-color);
         }
 
-        .input-group input:focus {
-            border-color: #667eea;
+        .input-field:focus {
+            border-color: var(--input-focus);
             background: white;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1),
+                        0 2px 4px -2px rgba(99, 102, 241, 0.1);
+            outline: 3px solid rgba(129, 140, 248, 0.2);
         }
 
-        .input-group input::placeholder {
-            color: #a0aec0;
-            opacity: 1;
-        }
-
-        .input-group i {
+        .input-icon {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
-            font-size: 1.1rem;
+            color: #94a3b8;
+            font-size: 1.25rem;
             transition: color 0.3s ease;
+            left: 20px;
         }
 
-        .input-group input:focus ~ i {
-            color: #667eea;
+        .input-field:focus ~ .input-icon {
+            color: var(--accent-color);
         }
 
-        .icon-left {
-            left: 15px;
-        }
-
-        .toggle-password {
-            right: 15px;
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .toggle-password:hover {
-            transform: scale(1.1);
-            color: #667eea;
-        }
-
-        .error {
-            display: flex;
-            align-items: center;
-            color: #e53e3e;
-            font-size: 0.85rem;
-            margin: -10px 0 15px 5px;
-            opacity: 0;
-            transform: translateY(-5px);
+            background: none;
+            border: none;
+            color: #94a3b8;
             transition: all 0.3s ease;
         }
 
-        .error.show {
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin: 8px 0 0 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            gap: 8px;
+        }
+
+        .error-message.show {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .error i {
-            margin-right: 8px;
-            font-size: 0.9rem;
+        .error-icon {
+            font-size: 1rem;
         }
 
         .register-btn {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 16px;
+            background: var(--primary-gradient);
             border: none;
             color: white;
-            font-size: 1rem;
-            border-radius: 8px;
+            font-size: 1.1rem;
+            border-radius: 14px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-        }
-
-        .register-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            bottom: -50%;
-            left: -50%;
-            background: linear-gradient(45deg, 
-                rgba(255,255,255,0) 25%,
-                rgba(255,255,255,0.2) 50%,
-                rgba(255,255,255,0) 75%
-            );
-            transform: translateX(-100%) rotate(45deg);
-            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
         .register-btn:hover {
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
             transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.25);
         }
 
-        .register-btn:hover::after {
-            transform: translateX(100%) rotate(45deg);
+        .register-btn:active {
+            transform: translateY(0);
         }
 
-        .register-container p {
-            margin-top: 20px;
+        .register-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: left 0.7s;
+        }
+
+        .register-btn:hover::before {
+            left: 100%;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 4px;
+            background: var(--accent-color);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: width 0.5s ease;
+        }
+
+        .auth-links {
+            margin-top: 32px;
             text-align: center;
-            color: #718096;
-            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .register-container p a {
-            color: #667eea;
+        .auth-links a {
+            color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             position: relative;
+            transition: color 0.3s ease;
         }
 
-        .register-container p a::after {
+        .auth-links a::after {
             content: '';
             position: absolute;
             bottom: -2px;
             left: 0;
             width: 0;
             height: 2px;
-            background: #764ba2;
+            background: var(--accent-color);
             transition: width 0.3s ease;
         }
 
-        .register-container p a:hover::after {
+        .auth-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .auth-links a:hover::after {
             width: 100%;
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 18px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-150%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background: rgba(72, 187, 120, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-icon {
+            font-size: 1.2rem;
         }
 
         @media (max-width: 480px) {
             .register-container {
                 width: 90%;
-                padding: 30px 20px;
+                padding: 32px;
                 margin: 20px;
             }
-            
-            body {
-                align-items: flex-start;
-                padding-top: 40px;
+
+            .register-header h1 {
+                font-size: 2.25rem;
             }
+
+            .input-field {
+                padding: 14px 48px;
+            }
+        }
+
+        /* Floating Animation */
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating-element {
+            animation: floating 6s ease-in-out infinite;
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h1>Buat Akun Baru</h1>
+    <div class="dynamic-bg">
+        <div class="animated-blob" style="width: 600px; height: 600px; top: -200px; left: -200px;"></div>
+        <div class="animated-blob" style="width: 500px; height: 500px; bottom: -150px; right: -100px; animation-delay: -5s;"></div>
+    </div>
+
+    <div class="register-container floating-element">
+        <div class="register-header">
+            <h1>Buat Akun Baru</h1>
+            <p>Mulai perjalanan digital Anda dengan bergabung bersama kami</p>
+            <div class="progress-bar"></div>
+        </div>
+
         <form id="registerForm">
-            <div class="input-group">
-                <i class="fas fa-user icon-left"></i>
-                <input type="text" id="username" placeholder="Username (min. 6 karakter)" required>
-            </div>
-            <div class="error" id="usernameError">
-                <i class="fas fa-exclamation-circle"></i>
-                Username minimal 6 karakter!
-            </div>
-
-            <div class="input-group">
-                <i class="fas fa-lock icon-left"></i>
-                <input type="password" id="password" placeholder="Password (min. 6 karakter)" required>
-                <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
-            </div>
-            <div class="error" id="passwordError">
-                <i class="fas fa-exclamation-circle"></i>
-                Password minimal 6 karakter!
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="username" class="input-field" placeholder="Username" minlength="6" required>
+                    <i class="fas fa-user-tag input-icon"></i>
+                </div>
+                <div class="error-message" id="usernameError">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    Username minimal 6 karakter
+                </div>
             </div>
 
-            <button type="submit" class="register-btn">Daftar Sekarang</button>
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="email" id="email" class="input-field" placeholder="Email" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                <div class="error-message" id="emailError">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    Masukkan email yang valid
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="tel" id="phone" class="input-field" placeholder="Nomor Telepon" pattern="^\+?\d{10,15}$" required>
+                    <i class="fas fa-mobile-alt input-icon"></i>
+                </div>
+                <div class="error-message" id="phoneError">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    Format nomor tidak valid
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="password" id="password" class="input-field" placeholder="Password" minlength="6" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <button type="button" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="error-message" id="passwordError">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    Password minimal 6 karakter
+                </div>
+            </div>
+
+            <button type="submit" class="register-btn">
+                <span>Daftar Sekarang</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </form>
-        <p>Sudah punya akun? <a href="/auth/login">Masuk disini</a></p>
+
+        <div class="auth-links">
+            <a href="/auth/login">Sudah punya akun? Masuk disini</a>
+            <a href="/auth/forgot-password">Lupa password?</a>
+        </div>
+    </div>
+
+    <div class="notification">
+        <i class="fas fa-check-circle notification-icon"></i>
+        <span class="notification-message"></span>
     </div>
 
     <script>
-        document.getElementById("registerForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
-            const usernameError = document.getElementById("usernameError");
-            const passwordError = document.getElementById("passwordError");
+document.addEventListener("DOMContentLoaded", () => {  
+    const form = document.getElementById('registerForm');  
+    const notification = document.querySelector('.notification');  
+    const passwordToggle = document.querySelector('.password-toggle');  
 
-            // Reset error
-            usernameError.classList.remove('show');
-            passwordError.classList.remove('show');
+    if (passwordToggle) {  
+        passwordToggle.addEventListener('click', () => {  
+            const passwordInput = document.getElementById('password');  
+            const icon = passwordToggle.querySelector('i');  
 
-            let isValid = true;
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';  
+            icon.classList.toggle('fa-eye-slash');  
+        });  
+    }  
 
-            if (username.length < 6) {
-                usernameError.classList.add('show');
-                isValid = false;
-            }
+    form.addEventListener('submit', async (e) => {  
+        e.preventDefault();  
 
-            if (password.length < 6) {
-                passwordError.classList.add('show');
-                isValid = false;
-            }
+        // Ambil data input  
+        const username = document.getElementById("username").value.trim();  
+        const email = document.getElementById("email").value.trim();  
+        const phone = document.getElementById("phone").value.trim();  
+        const password = document.getElementById("password").value.trim();  
 
-            if (!isValid) return;
+        const usernameError = document.getElementById("usernameError");  
+        const emailError = document.getElementById("emailError");  
+        const phoneError = document.getElementById("phoneError");  
+        const passwordError = document.getElementById("passwordError");  
 
-            // Simulasi API call
-            const response = await fetch("/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
-            });
+        // Reset pesan error  
+        [usernameError, emailError, phoneError, passwordError].forEach(el => el?.classList.remove('show'));  
 
-            const result = await response.json();
+        let isValid = true;  
+
+        // Validasi input  
+        if (!username) {  
+            usernameError.textContent = "Username tidak boleh kosong!";  
+            usernameError.classList.add('show');  
+            isValid = false;  
+        } else if (username.length < 6) {  
+            usernameError.textContent = "Username harus minimal 6 karakter!";  
+            usernameError.classList.add('show');  
+            isValid = false;  
+        }  
+
+        if (!email) {  
+            emailError.textContent = "Email tidak boleh kosong!";  
+            emailError.classList.add('show');  
+            isValid = false;  
+        } else {  
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  
+            if (!emailPattern.test(email)) {  
+                emailError.textContent = "Format email tidak valid!";  
+                emailError.classList.add('show');  
+                isValid = false;  
+            }  
+        }  
+
+        if (!phone) {  
+            phoneError.textContent = "Nomor telepon tidak boleh kosong!";  
+            phoneError.classList.add('show');  
+            isValid = false;  
+        } else {  
+            const phonePattern = /^\+?\d{10,15}$/;  
+            if (!phonePattern.test(phone)) {  
+                phoneError.textContent = "Nomor telepon harus 10-15 digit!";  
+                phoneError.classList.add('show');  
+                isValid = false;  
+            }  
+        }  
+
+        if (!password) {  
+            passwordError.textContent = "Password tidak boleh kosong!";  
+            passwordError.classList.add('show');  
+            isValid = false;  
+        } else if (password.length < 6) {  
+            passwordError.textContent = "Password harus minimal 6 karakter!";  
+            passwordError.classList.add('show');  
+            isValid = false;  
+        }  
+
+        if (!isValid) return;  
+
+        // Kirim data ke backend  
+        const formData = {  
+            username,  
+            password,  
+            email,  
+            phone  
+        };  
+
+        const registerBtn = document.querySelector('.register-btn');  
+        const progressBar = document.querySelector('.progress-bar');  
+
+        if (registerBtn) registerBtn.disabled = true;  
+        if (progressBar) progressBar.style.width = '100%';  
+
+        try {  
+            const response = await fetch('/api/register', {  
+                method: 'POST',  
+                headers: { 'Content-Type': 'application/json' },  
+                body: JSON.stringify(formData)  
+            });  
+
+            if (!response.ok) {  
+                throw new Error("Terjadi kesalahan saat mendaftar.");  
+            }  
+
+            const result = await response.json();  
             
-            if (response.ok) {
-                showSuccessModal('Pendaftaran berhasil! Mengarahkan ke login...');
-                setTimeout(() => {
-                    window.location.href = "/auth/login";
-                }, 2000);
-            } else {
-                showErrorModal(result.message || 'Terjadi kesalahan');
-            }
-        });
+            console.log("Response:", result); // Debugging output
 
-        function togglePassword() {
-            const passwordInput = document.getElementById("password");
-            const toggleIcon = document.querySelector(".toggle-password");
+            if (result && result.message) {  
+                if (result.message.toLowerCase().includes("owner account created successfully")) {  
+                    showNotification("Mengarah Ke Dashboard", 'success');  
+                    setTimeout(() => {  
+                        window.location.href = "/dashboard";  
+                    }, 2000);  
+                } else {  
+                    showNotification("Registrasi berhasil", 'success');  
+                    setTimeout(() => {  
+                        window.location.href = "/auth/verif";  
+                    }, 2000);  
+                }  
+            } else {  
+                throw new Error("Respon tidak valid dari server.");  
+            }  
+        } catch (error) {  
+            console.error("Error:", error); // Debugging error
+            showNotification(error.message || "Gagal menghubungi server.", 'error');  
+        } finally {  
+            if (registerBtn) registerBtn.disabled = false;  
+            if (progressBar) progressBar.style.width = '0%';  
+        }  
+    });  
 
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                passwordInput.type = "password";
-                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
+    function showNotification(message, type = 'success') {  
+        if (!notification) return;  
 
-        function showSuccessModal(message) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #48bb78;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
-                animation: slideIn 0.3s ease-out;
-            `;
-            modal.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                ${message}
-            `;
-            document.body.appendChild(modal);
-            
-            setTimeout(() => {
-                modal.remove();
-            }, 3000);
-        }
+        const icon = notification.querySelector('.notification-icon');  
+        notification.className = `notification ${type} show`;  
+        notification.querySelector('.notification-message').textContent = message;  
 
-        function showErrorModal(message) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #f56565;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
-                animation: slideIn 0.3s ease-out;
-            `;
-            modal.innerHTML = `
-                <i class="fas fa-exclamation-triangle"></i>
-                ${message}
-            `;
-            document.body.appendChild(modal);
-            
-            setTimeout(() => {
-                modal.remove();
-            }, 3000);
-        }
+        icon.className = `notification-icon ${  
+            type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'  
+        }`;  
+
+        setTimeout(() => notification.classList.remove('show'), 4000);  
+    }  
+});
     </script>
 </body>
 </html>

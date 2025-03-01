@@ -5,73 +5,327 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deposit QRISFAST</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; }
-        img { width: 200px; height: 200px; margin-top: 10px; }
-        .hidden { display: none; }
-        .success { color: green; font-weight: bold; }
-        .expired { color: red; font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        button.cancel {
+            background: #e74c3c;
+            margin-top: 15px;
+        }
+
+        button.cancel:hover {
+            background: #c0392b;
+        }
+
+        #qr-container {
+            margin-top: 30px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        #qr-container.show {
+            opacity: 1;
+            max-height: 1000px;
+        }
+
+        .qr-wrapper {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        img {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+            display: block;
+            border: 10px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress {
+            width: 100%;
+            height: 100%;
+            background: #3498db;
+            transition: width 0.3s ease;
+        }
+
+        .success {
+            background: #e8f6ef;
+            color: #27ae60;
+        }
+
+        .expired {
+            background: #fdecea;
+            color: #e74c3c;
+        }
+
+        .warning {
+            background: #fcf4e6;
+            color: #f39c12;
+        }
+
+        .wr-box {
+            background: #e8f4fc;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .amount-display {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Deposit QRISFAST</h2>
-        <input type="number" id="nominal" placeholder="Masukkan nominal">
-        <button onclick="buatDeposit()">Buat Deposit</button>
+        <h2>💰 Deposit QRISFAST</h2>
+        
+        <div class="input-group">
+            <input type="number" id="nominal" placeholder="Masukkan nominal (minimal 10.000)" min="10000">
+        </div>
 
-        <div id="qr-container" class="hidden">
-            <h3>Scan QR untuk Membayar</h3>
-            <img id="qr-img" src="" alt="QR Code">
-            <p id="wr-text"></p>
-            <p id="status-text">Menunggu pembayaran...</p>
+        <button onclick="buatDeposit()">Buat Deposit Sekarang</button>
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Memproses permintaan...</p>
+        </div>
+
+        <div id="qr-container">
+            <div class="qr-wrapper">
+                <div class="amount-display" id="amount-display"></div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <img id="qr-img" src="" alt="QR Code">
+                <div class="wr-box">
+                    <span id="wr-text"></span>
+                </div>
+                <div class="status-box warning" id="status-text">
+                    ⏳ Menunggu pembayaran...
+                </div>
+                <button class="cancel" onclick="batalkanPembayaran()">Batalkan Pembayaran</button>
+            </div>
         </div>
     </div>
 
     <script>
         let reff_id = "";
         let wr = "";
+        let checkInterval;
+        let timeLeft = 300; // 5 menit dalam detik
+
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
 
         async function buatDeposit() {
             const nominal = document.getElementById("nominal").value;
-            if (!nominal) return alert("Masukkan nominal!");
+            if (!nominal || nominal < 10000) {
+                alert("Masukkan nominal minimal Rp 10.000!");
+                return;
+            }
 
-            const response = await fetch("/api/deposit/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nominal })
-            });
+            document.querySelector('.loading').style.display = 'block';
+            
+            try {
+                const response = await fetch("/api/deposit/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nominal })
+                });
 
-            const result = await response.json();
-            if (result.status !== "success") return alert("Gagal membuat deposit!");
+                const result = await response.json();
+                if (result.status !== "success") throw new Error("Gagal membuat deposit");
 
-            reff_id = result.reff_id;
-            wr = result.wr; // Simpan WR
-            document.getElementById("qr-img").src = result.qr_url;
-            document.getElementById("wr-text").innerText = `Wallet Reference (WR): ${wr}`;
-            document.getElementById("qr-container").classList.remove("hidden");
-            cekStatusDeposit();
+                reff_id = result.reff_id;
+                wr = result.wr;
+                
+                document.getElementById("qr-img").src = result.qr_url;
+                document.getElementById("wr-text").innerText = `WR: ${wr}`;
+                document.getElementById("amount-display").innerText = formatRupiah(nominal);
+                
+                // Animasi tampilkan QR
+                const qrContainer = document.getElementById("qr-container");
+                qrContainer.classList.add('show');
+                document.querySelector('.loading').style.display = 'none';
+                
+                startPaymentTimer();
+                cekStatusDeposit();
+            } catch (error) {
+                alert(error.message);
+                document.querySelector('.loading').style.display = 'none';
+            }
+        }
+
+        function startPaymentTimer() {
+            const progressBar = document.getElementById("progress");
+            const updateInterval = 1000;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                const progressWidth = (timeLeft / 300) * 100;
+                progressBar.style.width = progressWidth + "%";
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById("status-text").innerHTML = '❌ Waktu pembayaran telah habis';
+                    document.getElementById("status-text").className = 'status-box expired';
+                }
+            }, updateInterval);
         }
 
         async function cekStatusDeposit() {
-            if (!reff_id) return;
+            checkInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/deposit/status/${reff_id}`);
+                    const result = await response.json();
 
-            const interval = setInterval(async () => {
-                const response = await fetch(`/api/deposit/status/${reff_id}`);
-                const result = await response.json();
-
-                if (result.status === "success" && result.data.status === "success") {
-                    document.getElementById("status-text").innerText = "✅ Deposit berhasil!";
-                    document.getElementById("status-text").classList.add("success");
-                    clearInterval(interval);
-                    setTimeout(() => document.getElementById("qr-container").classList.add("hidden"), 3000);
-                } else if (result.status === "expired") {
-                    document.getElementById("status-text").innerText = "❌ Deposit kedaluwarsa!";
-                    document.getElementById("status-text").classList.add("expired");
-                    clearInterval(interval);
+                    if (result.status === "success" && result.data.status === "success") {
+                        document.getElementById("status-text").innerHTML = '✅ Pembayaran Berhasil!';
+                        document.getElementById("status-text").className = 'status-box success';
+                        clearInterval(checkInterval);
+                        setTimeout(() => {
+                            document.getElementById("qr-container").classList.remove('show');
+                        }, 3000);
+                    } else if (result.status === "expired") {
+                        document.getElementById("status-text").innerHTML = '❌ Pembayaran Kedaluwarsa';
+                        document.getElementById("status-text").className = 'status-box expired';
+                        clearInterval(checkInterval);
+                    }
+                } catch (error) {
+                    console.error('Error checking status:', error);
                 }
             }, 5000);
         }
+
+        function batalkanPembayaran() {
+            clearInterval(checkInterval);
+            document.getElementById("qr-container").classList.remove('show');
+            document.getElementById("status-text").innerHTML = '⏳ Menunggu pembayaran...';
+            document.getElementById("status-text").className = 'status-box warning';
+            timeLeft = 300;
+            document.getElementById("progress").style.width = '100%';
+            alert('Pembayaran dibatalkan');
+        }
+
+        // Input validation
+        document.getElementById('nominal').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
     </script>
 </body>
 </html>

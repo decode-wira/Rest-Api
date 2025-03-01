@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset API - Selamat Datang</title>
+    <title>Evolve API - Next Gen API Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,7 +12,9 @@
             --secondary: #4f46e5;
             --dark: #0f172a;
             --light: #f8fafc;
-            --gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -20,7 +22,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         body {
@@ -30,38 +32,74 @@
             line-height: 1.6;
         }
 
-        .custom-cursor {
+        /* Dynamic Background */
+        .background-blobs {
             position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s, opacity 0.3s;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
         }
 
-        /* HEADER */
+        .blob {
+            position: absolute;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, -50px) scale(1.1); }
+            50% { transform: translate(-50px, 75px) scale(0.9); }
+            75% { transform: translate(-100px, -30px) scale(1.05); }
+        }
+
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 5%;
+            padding: 1.5rem 6%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Pastikan konten tetap rata tengah */
+    gap: 0.1rem; /* Jarak antara ikon dan teks lebih kecil */
+    font-size: 0.70rem; /* Mengecilkan ukuran teks */
+    font-weight: 500;
+    line-height: 1; /* Menghindari teks terpotong */
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    padding: 0.3rem 0.7rem; /* Padding lebih kecil agar tidak terlalu besar */
+    border-radius: 0.6rem; /* Border-radius lebih kecil agar proporsional */
+    white-space: nowrap; /* Mencegah teks turun ke baris baru */
+    min-height: 1.2rem; /* Pastikan tinggi cukup untuk teks */
+    display: inline-flex; /* Fleksibel dan tidak geser */
+    max-width: fit-content; /* Hindari elemen melebar berlebihan */
+}
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--glass);
+            backdrop-filter: blur(4px);
+            z-index: -1;
+            border-radius: 1rem;
         }
 
         .nav {
@@ -70,18 +108,21 @@
             gap: 1.5rem;
         }
 
-        .nav a {
+        .nav-link {
             color: var(--dark);
             text-decoration: none;
-            padding: 0.5rem 1.2rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 2rem;
-            font-weight: 500;
+            font-weight: 700;
             position: relative;
             overflow: hidden;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
-        .nav a::before {
+        .nav-link::before {
             content: '';
             position: absolute;
             top: 0;
@@ -94,99 +135,155 @@
             border-radius: 2rem;
         }
 
-        .nav a:hover {
+        .nav-link:hover {
             color: white;
             transform: translateY(-2px);
         }
 
-        .nav a:hover::before {
+        .nav-link:hover::before {
             opacity: 1;
         }
 
-        .nav a span {
+        .nav-link i {
+            font-size: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            max-width: 800px;
+            margin: 8rem auto 6rem;
             position: relative;
             z-index: 1;
         }
 
-        /* CONTAINER */
-        .container {
-            margin-top: 6rem;
-            padding: 4rem 5%;
-            position: relative;
-        }
-
-        .hero {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-            position: relative;
-        }
-
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin-bottom: 1.5rem;
-            line-height: 1.2;
-            background: var(--gradient);
+            line-height: 1.1;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: fadeInUp 1s ease;
+            animation: gradientShift 8s infinite;
         }
 
-        p.lead {
-            font-size: 1.25rem;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .lead {
+            font-size: 1.3rem;
             color: #64748b;
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 1s 0.2s ease backwards;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* FITUR */
+        /* Features Grid */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            padding: 4rem 6%;
+            position: relative;
         }
 
         .feature {
             padding: 2.5rem;
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.4s;
             position: relative;
             overflow: hidden;
-        }
-
-        .feature::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient);
-            transform: scaleX(0);
-            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .feature:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .feature:hover::after {
-            transform: scaleX(1);
-        }
-
-        .feature i {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
         }
 
-        /* DARK MODE */
+        .feature:hover::before {
+            opacity: 0.05;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 25%,
+                rgba(255,255,255,0.2) 50%,
+                transparent 75%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        /* Dark Mode */
         .dark-mode {
             background: var(--dark);
             color: var(--light);
@@ -196,170 +293,173 @@
             background: rgba(15, 23, 42, 0.95);
         }
 
-        .dark-mode .nav a {
+        .dark-mode .feature {
+            background: rgba(30, 41, 59, 0.95);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .nav-link {
             color: var(--light);
         }
 
-        .dark-mode .feature {
-            background: #1e293b;
-        }
-
-        .dark-mode p.lead {
-            color: #94a3b8;
-        }
-
-        /* ANIMATIONS */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* RESPONSIVE */
+        /* Responsive */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
 
             .nav {
                 gap: 1rem;
             }
 
-            .nav a {
-                padding: 0.5rem 1rem;
+            .nav-link {
+                padding: 0.7rem 1.2rem;
                 font-size: 0.9rem;
             }
 
             .features {
                 grid-template-columns: 1fr;
+                padding: 2rem;
             }
         }
 
-        /* BUTTON STYLE */
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            animation: fadeInUp 1s 0.4s ease backwards;
+        /* Animated Blobs */
+        .blob:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        .blob:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -5s;
         }
 
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: float 3s infinite;
+        /* Hover Effects */
+        .hover-scale {
+            transition: transform 0.3s;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .hover-scale:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <div class="custom-cursor"></div>
+    <div class="background-blobs">
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
 
-    <!-- HEADER -->
+    <!-- Header -->
     <header class="header">
-        <div class="logo">Reset API</div>
+        <div class="logo hover-scale">
+            <i class="fas fa-infinity"></i>
+            <span>EvolveAPI</span>
+        </div>
+        
         <nav class="nav">
-            <a href="/auth/login"><i class="fas fa-sign-in-alt"></i><span> Login</span></a>
-            <a href="/auth/register"><i class="fas fa-user-plus"></i><span> Daftar</span></a>
-            <i class="fas fa-moon toggle-dark-mode"></i>
+            <a href="/auth/login" class="nav-link">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+            <a href="/auth/register" class="nav-link">
+                <i class="fas fa-user-plus"></i>
+                <span>Daftar</span>
+            </a>
+            <button class="nav-link toggle-dark-mode">
+                <i class="fas fa-moon"></i>
+            </button>
         </nav>
     </header>
 
-    <!-- HERO -->
-    <div class="container">
-        <div class="hero">
-            <h1>Selamat Datang di Reset API</h1>
-            <p class="lead">Kelola API key Anda dengan mudah, aman, dan gratis. Dapatkan akses instan ke platform manajemen API paling modern.</p>
+    <!-- Main Content -->
+    <main class="container">
+        <section class="hero">
+            <h1>Keterangan Api</h1>
+            <p class="lead">Platform terintegrasi untuk mengelola, memantau, dan mengamankan API dengan teknologi mutakhir</p>
             <button class="cta-button">
-                Mulai Sekarang
+                Mulai Gratis Sekarang
                 <i class="fas fa-arrow-right"></i>
             </button>
-        </div>
+        </section>
 
-        <!-- FITUR -->
-        <div class="features">
-            <div class="feature">
-                <i class="fas fa-shield-alt"></i>
-                <h3>Keamanan Militer</h3>
-                <p>Enkripsi AES-256 dengan autentikasi multi-faktor untuk perlindungan maksimal</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-rocket"></i>
-                <h3>Performa Tinggi</h3>
-                <p>Response time di bawah 50ms dengan uptime 99.99%</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-magic"></i>
-                <h3>Integrasi Mudah</h3>
-                <p>Dokumentasi lengkap dengan SDK untuk berbagai bahasa pemrograman</p>
-            </div>
-        </div>
-    </div>
+        <!-- Features -->
+        <section class="features">
+            <article class="feature hover-scale">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Keamanan Tingkat Tinggi</h3>
+                <p>Keamanan pada data pengguna terjaga</p>
+            </article>
+            
+            <article class="feature hover-scale">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Performa Optimal</h3>
+                <p>Response time konsisten di bawah 50ms dengan skalabilitas otomatis</p>
+            </article>
+            
+            <article class="feature hover-scale">
+                <div class="feature-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <h3>Mudah Digunakan</h3>
+                <p>Api dirancang agar lebih mudah dan kompatibel untuk digunakan</p>
+            </article>
+        </section>
+    </main>
 
     <script>
-        // Custom Cursor
-        const cursor = document.querySelector('.custom-cursor');
+        // Dark Mode Toggle
+        const toggleDarkMode = document.querySelector('.toggle-dark-mode');
+        toggleDarkMode.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = toggleDarkMode.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+
+        // Initialize Dark Mode
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            toggleDarkMode.querySelector('i').classList.add('fa-sun');
+        }
+
+        // Parallax Effect
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        // Dark Mode
-        const toggleDarkMode = document.querySelector(".toggle-dark-mode");
-        toggleDarkMode.addEventListener("click", () => {
-            document.body.classList.toggle("dark-mode");
-            toggleDarkMode.classList.toggle("fa-sun");
-            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
-        });
-
-        // Particle Effect
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.width = Math.random() * 10 + 5 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.opacity = 0.5;
-            document.body.appendChild(particle);
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
             
-            setTimeout(() => {
-                particle.remove();
-            }, 3000);
-        }
-
-        document.addEventListener('click', (e) => {
-            createParticle(e.clientX, e.clientY);
+            document.querySelectorAll('.blob').forEach((blob, index) => {
+                const speed = index === 0 ? 0.02 : 0.03;
+                blob.style.transform = `translate(${x * 50 * speed}px, ${y * 50 * speed}px)`;
+            });
         });
 
-        // Initial Dark Mode Check
-        if (localStorage.getItem("darkMode") === "enabled") {
-            document.body.classList.add("dark-mode");
-            toggleDarkMode.classList.add("fa-sun");
-        }
+        // Scroll Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.feature').forEach((el) => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(30px)';
+            observer.observe(el);
+        });
     </script>
 </body>
 </html>
