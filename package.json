@@ -20,7 +20,7 @@
         "morgan": "^1.10.0",
         "node-fetch": "^3.3.1",
         "nodemailer": "^6.10.0",
-        "path": "^0.12.7";
+        "path": "^0.12.7",
         "qrcode": "^1.5.4",
         "qrcode-with-logos": "^1.0.3"
     }
