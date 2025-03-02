@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { updateUsage } = require('../index')
+const { updateUsage } = require('../index.js')
 
-const { downloadInstagram, terabox, capcutdl, douyindl, spotifydl, pindl, mediafiredl, GDrive, videydl } = require('../lib/function')
+const { downloadInstagram, terabox, capcutdl, douyindl, spotifydl, pindl, mediafiredl, GDrive, videydl } = require('../lib/function.js')
 
 router.get("/tiktok", async (req, res) => {
   const { url, apikey } = req.query;

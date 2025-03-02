@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { updateUsage } = require('../index')
+const { updateUsage } = require('../index.js')
 
 const {
   convertCRC16,

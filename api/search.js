@@ -1,10 +1,10 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { updateUsage } = require('../index')
+const { updateUsage } = require('../index.js')
 
 const { BingImageSearch, searchWikipedia,
-bingSearch, bingVideoSearch, pinterest, Cerpen, spotifySearch, wikiImage, sfilesrc, srcLyrics, komiktapsrc, komiktapsrcq } = require('../lib/function')
+bingSearch, bingVideoSearch, pinterest, Cerpen, spotifySearch, wikiImage, sfilesrc, srcLyrics, komiktapsrc, komiktapsrcq } = require('../lib/function.js')
 
 const apiKey = 'AIzaSyAajE2Y-Kgl8bjPyFvHQ-PgRUSMWgBEsSk';
 const cx = 'e5c2be9c3f94c4bbb';
