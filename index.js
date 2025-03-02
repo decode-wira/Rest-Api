@@ -163,6 +163,22 @@ async function updateUsage(apikey) {
     return { success: true };
 }
 
+async function getUsers() {
+    try {
+        const db = await getDatabase();
+        return db.users || [];
+    } catch (error) {
+        console.error("Error getting users:", error);
+        return [];
+    }
+}
+
+module.exports =  {
+    updateUsage,
+    getUsers,
+    getDatabase
+}
+
 // Fungsi tambah pengunjung baru
 async function tambahPengunjung() {
     try {
@@ -682,7 +698,6 @@ app.get("/api/deposit/status/:id", async (req, res) => {
 });
 
 // End Point
-
 app.use('/api/search', require('./api/search'));
 app.use('/api/download', require('./api/download'));
 app.use('/api/payment', require('./api/orkut'));
