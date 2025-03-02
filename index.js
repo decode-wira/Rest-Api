@@ -704,7 +704,6 @@ module.exports = app; // Untuk AWS Lambda/Vercel
 // Jika dijalankan secara langsung
 if (require.main === module) {
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
-}
     // Jadwal reset limit harian
 setInterval(async () => {
   const db = await getDatabase();
