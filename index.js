@@ -704,34 +704,35 @@ module.exports = app; // Untuk AWS Lambda/Vercel
 // Jika dijalankan secara langsung
 if (require.main === module) {
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
+
     // Jadwal reset limit harian
-setInterval(async () => {
-  const db = await getDatabase();
-  const today = new Date();
-  let needsUpdate = false;
+    setInterval(async () => {
+        const db = await getDatabase();
+        const today = new Date();
+        let needsUpdate = false;
 
-  db.users = db.users.map(user => {
-    // Reset limit harian
-    if (user.lastReset !== getTodayDate()) {
-      // Jika plan bukan basic dan sudah expired, downgrade ke basic
-      if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
-        user.plan = 'basic';
-        user.limit = PLANS.basic.limit;
-        user.planExpiresAt = null;
-      } else {
-        // Reset limit sesuai plan
-        user.limit = PLANS[user.plan].limit;
-      }
-      
-      user.lastReset = getTodayDate();
-      needsUpdate = true;
-    }
-    return user;
-  });
+        db.users = db.users.map(user => {
+            // Reset limit harian
+            if (user.lastReset !== getTodayDate()) {
+                // Jika plan bukan basic dan sudah expired, downgrade ke basic
+                if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
+                    user.plan = 'basic';
+                    user.limit = PLANS.basic.limit;
+                    user.planExpiresAt = null;
+                } else {
+                    // Reset limit sesuai plan
+                    user.limit = PLANS[user.plan].limit;
+                }
 
-  if (needsUpdate) {
-    await saveDatabase(db);
-    console.log("Limit dan plan pengguna telah di-update");
-  }
-}, 86400000);
-})
+                user.lastReset = getTodayDate();
+                needsUpdate = true;
+            }
+            return user;
+        });
+
+        if (needsUpdate) {
+            await saveDatabase(db);
+            console.log("Limit dan plan pengguna telah di-update");
+        }
+    }, 86400000);
+}
