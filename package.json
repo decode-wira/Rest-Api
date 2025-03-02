@@ -23,6 +23,9 @@
         "nodemailer": "^6.10.0",
         "path": "^0.12.7",
         "qrcode": "^1.5.4",
-        "qrcode-with-logos": "^1.0.3"
+        "qrcode-with-logos": "^1.0.3",
+        "@sparticuz/chromium": "^132.0.0",
+        "puppeteer-core": "^24.3.0",
+        "stream": "^0.0.3" 
     }
 }
