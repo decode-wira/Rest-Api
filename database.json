@@ -33,6 +33,23 @@
       "createdAt": "2025-03-01T06:18:00.581Z",
       "otp": null,
       "otpExpiration": null
+    },
+    {
+      "id": "45247988-9a80-456c-832a-552547929376",
+      "username": "ikannnnn",
+      "password": "$2a$10$NW60YtqyzYTFaUcG0YmTX.UZ5aowa..LsSboOPQgZlQrrrjJH7fLa",
+      "email": "ikannpt@gmail.com",
+      "phone": "6285765183832",
+      "apikey": "c550637b8e6270f928d68bd359c61a66",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-03-02T04:37:22.230Z",
+      "otp": "310027",
+      "otpExpiration": "2025-03-02T04:52:22.230Z"
     }
   ],
   "historyRequest": {
