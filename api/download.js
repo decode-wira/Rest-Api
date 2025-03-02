@@ -1,8 +1,8 @@
 const express = require('express');
 const axios = require('axios');
+const cheerio = require('cheerio');
 const router = express.Router();
-const { updateUsage } = require('../index.js')
-
+const { updateUsage } = require('../lib/untils')
 const { downloadInstagram, terabox, capcutdl, douyindl, spotifydl, pindl, mediafiredl, GDrive, videydl } = require('../lib/function.js')
 
 router.get("/tiktok", async (req, res) => {
