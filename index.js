@@ -163,22 +163,6 @@ async function updateUsage(apikey) {
     return { success: true };
 }
 
-async function getUsers() {
-    try {
-        const db = await getDatabase();
-        return db.users || [];
-    } catch (error) {
-        console.error("Error getting users:", error);
-        return [];
-    }
-}
-
-module.exports =  {
-    updateUsage,
-    getUsers,
-    getDatabase
-}
-
 // Fungsi tambah pengunjung baru
 async function tambahPengunjung() {
     try {
@@ -715,11 +699,11 @@ app.get('/api/total-endpoints', (req, res) => {
 });
 
 // == End Wak
+module.exports = app; // Untuk AWS Lambda/Vercel
 
-// Server setup
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
+// Jika dijalankan secara langsung
+if (require.main === module) {
+    app.listen(3000, () => console.log("Server berjalan di port 3000");
     // Jadwal reset limit harian
 setInterval(async () => {
   const db = await getDatabase();
