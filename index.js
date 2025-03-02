@@ -683,6 +683,8 @@ app.get("/api/deposit/status/:id", async (req, res) => {
 
 // End Point
 
+app.use('/api/search', require('./api/search'));
+app.use('/api/download', require('./api/download'));
 app.use('/api/payment', require('./api/orkut'));
 
 app.get('/api/total-endpoints', (req, res) => {
