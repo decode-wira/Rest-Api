@@ -50,6 +50,23 @@
       "createdAt": "2025-03-02T04:37:22.230Z",
       "otp": null,
       "otpExpiration": null
+    },
+    {
+      "id": "bcf96c25-8b44-448a-9ef2-b45534679b69",
+      "username": "webeka",
+      "password": "$2a$10$08jJ4FqgnO8eSzXsKwr1ZeMF/uUyIMg4KGHALUhePIh4dKPCgBQpu",
+      "email": "wbagazk@gmail.com",
+      "phone": "089516174846",
+      "apikey": "82a46349be05215ae9914f9856193c09",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-03-02T04:44:33.837Z",
+      "otp": "730644",
+      "otpExpiration": "2025-03-02T04:59:33.837Z"
     }
   ],
   "historyRequest": {
