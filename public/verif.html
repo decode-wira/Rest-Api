@@ -3,21 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifikasi Email | Evolve</title>
+  <title>Email Verification | Evolve</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     :root {
       --primary: #4361ee;
+      --primary-hover: #3a0ca3;
       --success: #06d6a0;
       --danger: #ef476f;
       --dark: #2b2d42;
       --light: #f8f9fa;
+      --gray: #6c757d;
+      --border: #e9ecef;
+      --shadow: 0 12px 24px rgba(0,0,0,0.1);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
     body {
@@ -25,7 +30,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--primary) 0%, #3a0ca3 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
       padding: 1rem;
     }
 
@@ -33,23 +38,45 @@
       background: white;
       padding: 2.5rem;
       border-radius: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
       width: 100%;
-      max-width: 450px;
-      transition: transform 0.3s ease;
+      max-width: 480px;
+      transform: translateY(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verification-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(67, 97, 238, 0.1), transparent);
+      transform: rotate(-15deg);
+      z-index: 1;
     }
 
     .verification-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
     }
 
     .logo {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 2;
     }
 
     .logo img {
-      height: 100px;
+      height: 80px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover img {
+      transform: rotate(-5deg) scale(1.05);
     }
 
     h2 {
@@ -57,40 +84,83 @@
       text-align: center;
       margin-bottom: 1.5rem;
       font-size: 1.8rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
     }
 
     .form-group {
       margin-bottom: 1.5rem;
       position: relative;
+      z-index: 2;
     }
 
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--dark);
-      font-weight: 500;
+    .input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      color: var(--gray);
+      pointer-events: none;
+      transition: color 0.3s ease;
     }
 
     input {
       width: 100%;
-      padding: 0.8rem 1rem;
-      border: 2px solid #e9ecef;
-      border-radius: 0.5rem;
+      padding: 0.8rem 1rem 0.8rem 2.75rem;
+      border: 2px solid var(--border);
+      border-radius: 0.75rem;
       font-size: 1rem;
-      transition: border-color 0.3s ease;
+      transition: all 0.3s ease;
+      background: white;
     }
 
     input:focus {
-      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+    }
+
+    input:focus ~ .input-icon {
+      color: var(--primary);
+    }
+
+    .otp-inputs {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .otp-input {
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 1.2rem;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .otp-input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+      outline: none;
     }
 
     .error-message {
       color: var(--danger);
       font-size: 0.875rem;
-      margin-top: 0.25rem;
+      margin-top: 0.5rem;
       display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .error-message i {
+      font-size: 1rem;
     }
 
     button {
@@ -99,7 +169,7 @@
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -107,15 +177,33 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: rotate(-45deg);
+      transition: transform 0.5s ease;
     }
 
     button:hover {
-      background: #3a0ca3;
+      background: var(--primary-hover);
+    }
+
+    button:hover::after {
+      transform: rotate(45deg) translateX(50%);
     }
 
     button:disabled {
-      background: #e9ecef;
+      background: var(--border);
       cursor: not-allowed;
     }
 
@@ -123,6 +211,9 @@
       text-align: center;
       margin-top: 1.5rem;
       color: var(--dark);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 2;
     }
 
     .resend-otp a {
@@ -130,40 +221,74 @@
       text-decoration: none;
       font-weight: 500;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .resend-otp a:hover {
+      color: var(--primary-hover);
+      transform: translateX(4px);
     }
 
     .resend-otp a:disabled {
-      color: #adb5bd;
+      color: var(--gray);
       cursor: not-allowed;
+      opacity: 0.7;
     }
 
     .success-message {
       background: var(--success);
       color: white;
-      padding: 1rem;
-      border-radius: 0.5rem;
+      padding: 1.25rem;
+      border-radius: 0.75rem;
       margin-bottom: 1.5rem;
       display: none;
+      align-items: center;
+      gap: 1rem;
+      animation: slideIn 0.5s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .success-message i {
+      font-size: 1.5rem;
+      animation: bounce 1s infinite;
     }
 
     .loader {
       width: 20px;
       height: 20px;
-      border: 3px solid white;
-      border-bottom-color: transparent;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
       border-radius: 50%;
       animation: rotation 1s linear infinite;
       display: none;
     }
 
     @keyframes rotation {
-      0% { transform: rotate(0deg) }
       100% { transform: rotate(360deg) }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0 }
+      to { transform: translateY(0); opacity: 1 }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) }
+      50% { transform: translateY(-6px) }
     }
 
     @media (max-width: 480px) {
       .verification-card {
-        padding: 1.5rem;
+        padding: 1.75rem;
+        border-radius: 1rem;
+      }
+
+      .otp-inputs {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
@@ -171,46 +296,61 @@
 <body>
   <div class="verification-card">
     <div class="logo">
-      <img src="https://files.catbox.moe/d0bza0.jpg" alt="Verif Mail Logo">
+      <img src="https://files.catbox.moe/d0bza0.jpg" alt="Evolve Logo">
     </div>
-    <h2>Verifikasi Email Anda</h2>
+    <h2>Verify Your Email</h2>
     
-    <div class="success-message"></div>
+    <div class="success-message">
+      <i class='bx bx-check-circle'></i>
+      <span>Verification Successful! Redirecting...</span>
+    </div>
     
-    <form onsubmit="verifyEmail(event)">
+    <form id="verificationForm">
       <div class="form-group">
-        <label for="email">Alamat Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          placeholder="Masukkan email Anda"
-          required
-        >
-        <div class="error-message" id="email-error"></div>
+        <label for="email">Email Address</label>
+        <div class="input-container">
+          <i class='bx bx-envelope input-icon'></i>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="your.email@example.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+        <div class="error-message" id="email-error">
+          <i class='bx bx-error-circle'></i>
+          <span></span>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="otp">Kode Verifikasi</label>
-        <input 
-          type="text" 
-          id="otp" 
-          placeholder="Masukkan 6 digit kode"
-          maxlength="6"
-          required
-        >
-        <div class="error-message" id="otp-error"></div>
+        <label for="otp">Verification Code</label>
+        <div class="otp-inputs" id="otpContainer">
+          <input type="text" class="otp-input" maxlength="1" data-index="1">
+          <input type="text" class="otp-input" maxlength="1" data-index="2">
+          <input type="text" class="otp-input" maxlength="1" data-index="3">
+          <input type="text" class="otp-input" maxlength="1" data-index="4">
+          <input type="text" class="otp-input" maxlength="1" data-index="5">
+          <input type="text" class="otp-input" maxlength="1" data-index="6">
+        </div>
+        <div class="error-message" id="otp-error">
+          <i class='bx bx-error-circle'></i>
+          <span></span>
+        </div>
       </div>
 
       <button type="submit" id="submitBtn">
-        <span>Verifikasi Sekarang</span>
+        <span>Verify Account</span>
         <div class="loader" id="loader"></div>
       </button>
     </form>
 
     <div class="resend-otp">
-      <span>Tidak menerima kode? </span>
+      <span>Didn't receive code?</span>
       <a onclick="resendOTP()" id="resendLink">
-        Kirim Ulang OTP 
+        <i class='bx bx-revision'></i>
+        <span>Resend OTP</span>
         <span id="countdown"></span>
       </a>
     </div>
@@ -220,48 +360,62 @@
     let countdownActive = false;
     const COUNTDOWN_TIME = 30;
 
-    async function verifyEmail(event) {
+    // OTP Input Handling
+    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+      input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        if (value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    async function handleVerification(event) {
       event.preventDefault();
       showLoading(true);
       clearErrors();
 
-      const email = document.getElementById("email").value.trim();
-      const otp = document.getElementById("otp").value.trim();
+      const email = document.getElementById('email').value.trim();
+      const otp = Array.from(document.querySelectorAll('.otp-input'))
+                      .map(input => input.value)
+                      .join('');
 
-      // Validasi sederhana
+      // Validation
       if (!validateEmail(email)) {
-        showError('email-error', 'Format email tidak valid');
+        showError('email-error', 'Please enter a valid email address');
         showLoading(false);
         return;
       }
 
-      if (otp.length !== 6) {
-        showError('otp-error', 'Kode OTP harus 6 digit');
+      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+        showError('otp-error', 'Please enter a valid 6-digit code');
         showLoading(false);
         return;
       }
 
       try {
-        const response = await fetch("/api/verify-email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+        const response = await fetch('/api/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, otp })
         });
 
-        const data = await response.json();
+        if (!response.ok) throw await response.json();
 
-        if (response.ok) {
-          showSuccess('Verifikasi berhasil! Mengarahkan ke dashboard...');
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 2000);
-        } else {
-          handleApiError(data);
-        }
+        document.querySelector('.success-message').style.display = 'flex';
+        document.getElementById('verificationForm').style.display = 'none';
+        
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
       } catch (error) {
-        showError('otp-error', 'Koneksi error. Coba lagi');
+        handleApiError(error);
       } finally {
         showLoading(false);
       }
@@ -269,13 +423,15 @@
 
     async function resendOTP() {
       if (countdownActive) return;
-
-      const email = document.getElementById("email").value.trim();
-      if (!email || !validateEmail(email)) {
-        showError('email-error', 'Masukkan email yang valid');
+      
+      const email = document.getElementById('email').value.trim();
+      if (!validateEmail(email)) {
+        showError('email-error', 'Please enter your email first');
         return;
       }
 
+      startCountdown();
+      
       try {
         startCountdown();
         const response = await fetch("/api/resend-otp", {
@@ -297,20 +453,16 @@
     function startCountdown() {
       let seconds = COUNTDOWN_TIME;
       countdownActive = true;
-      const countdownElement = document.getElementById("countdown");
-      const resendLink = document.getElementById("resendLink");
+      const resendLink = document.getElementById('resendLink');
 
       resendLink.style.pointerEvents = 'none';
-      
       const interval = setInterval(() => {
-        seconds--;
-        countdownElement.textContent = `(${seconds}s)`;
-        
+        document.getElementById('countdown').textContent = `(${--seconds}s)`;
         if (seconds <= 0) {
           clearInterval(interval);
           countdownActive = false;
           resendLink.style.pointerEvents = 'auto';
-          countdownElement.textContent = '';
+          document.getElementById('countdown').textContent = '';
         }
       }, 1000);
     }
@@ -319,18 +471,17 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function showLoading(isLoading) {
-      const submitBtn = document.getElementById("submitBtn");
-      const loader = document.getElementById("loader");
-      submitBtn.disabled = isLoading;
-      loader.style.display = isLoading ? 'block' : 'none';
-      submitBtn.querySelector('span').style.display = isLoading ? 'none' : 'block';
+    function showLoading(loading) {
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = loading;
+      document.getElementById('loader').style.display = loading ? 'block' : 'none';
+      submitBtn.querySelector('span').style.display = loading ? 'none' : 'block';
     }
 
     function showError(elementId, message) {
       const element = document.getElementById(elementId);
-      element.textContent = message;
-      element.style.display = 'block';
+      element.querySelector('span').textContent = message;
+      element.style.display = 'flex';
     }
 
     function clearErrors() {
@@ -339,23 +490,66 @@
       });
     }
 
-    function showSuccess(message) {
-      const successElement = document.querySelector('.success-message');
-      successElement.textContent = message;
-      successElement.style.display = 'block';
-      document.querySelector('form').style.display = 'none';
+    function handleApiError(error) {
+      const message = error?.message || 'An unexpected error occurred';
+      showError('otp-error', message);
     }
 
-    function handleApiError(data) {
-      if (data.errors) {
-        data.errors.forEach(error => {
-          if (error.field === 'email') showError('email-error', error.message);
-          if (error.field === 'otp') showError('otp-error', error.message);
-        });
-      } else {
-        showError('otp-error', data.message || 'Terjadi kesalahan');
-      }
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error'} '></i>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
+
+    // Initialize form submission
+    document.getElementById('verificationForm').addEventListener('submit', handleVerification);
+
+    // Dynamic input validation
+    document.getElementById('email').addEventListener('input', function(e) {
+      if (!validateEmail(e.target.value)) {
+        showError('email-error', 'Please enter a valid email');
+      } else {
+        document.getElementById('email-error').style.display = 'none';
+      }
+    });
   </script>
+
+  <style>
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.error {
+      border-left: 4px solid var(--danger);
+    }
+
+    .toast i {
+      font-size: 1.5rem;
+    }
+
+    .toast.success i { color: var(--success) }
+    .toast.error i { color: var(--danger) }
+  </style>
 </body>
 </html>
