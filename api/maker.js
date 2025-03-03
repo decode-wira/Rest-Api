@@ -6,8 +6,6 @@ const { updateUsage } = require('../lib/untils')
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const { generateImageWithText } = require('../lib/function.js')
 
-registerFont('../fonts/fonts.ttf', { family: 'Agus' }); 
-
 router.get('/brat', async (req, res) => {
   const { text, apikey } = req.query;
 
