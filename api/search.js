@@ -5,7 +5,7 @@ const router = express.Router();
 const { updateUsage } = require('../lib/untils')
 
 const { BingImageSearch, searchWikipedia,
-bingSearch, bingVideoSearch, pinterest, Cerpen, spotifySearch, wikiImage, sfilesrc, srcLyrics, komiktapsrc, komiktapsrcq, gempa, islamicnews, islamicsearch, islamicdetail, RumahMisteri, DetailRumahMisteri, cariGC, playstore, happymod, soundCloudSearch } = require('../lib/function.js')
+bingSearch, bingVideoSearch, pinterest, Cerpen, spotifySearch, wikiImage, sfilesrc, srcLyrics, komiktapsrc, komiktapsrcq, gempa, islamicnews, islamicsearch, islamicdetail, RumahMisteri, DetailRumahMisteri, cariGC, playstore, happymod, soundCloudSearch, stickerSearch } = require('../lib/function.js')
 
 const apiKey = 'AIzaSyAajE2Y-Kgl8bjPyFvHQ-PgRUSMWgBEsSk';
 const cx = 'e5c2be9c3f94c4bbb';
@@ -379,8 +379,8 @@ router.get("/islamicnews", async (req, res) => {
 
 router.get("/islamicsearch", async (req, res) => {
   const { query, apikey } = req.query;
-  if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
   if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
   try {
     const result = await updateUsage(apikey);
@@ -412,9 +412,9 @@ router.get("/islamicsearch", async (req, res) => {
 });
 
 router.get("/islamicdetail", async (req, res) => {
-  const { url, apikey } = req.query;
-  if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
+  const { url, apikey } = req.query;  
   if (!url) return res.status(400).json({ message: "URL berita diperlukan" });
+  if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
   try {
     const result = await updateUsage(apikey);
@@ -474,8 +474,8 @@ router.get("/rumahmisteri", async (req, res) => {
 
 router.get("/rumahmisteri-detail", async (req, res) => {
   const { url, apikey } = req.query;
-  if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
   if (!url) return res.status(400).json({ message: "URL artikel diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
   try {
     const result = await updateUsage(apikey);
@@ -506,8 +506,8 @@ router.get("/rumahmisteri-detail", async (req, res) => {
 
 router.get("/carigc", async (req, res) => {
     const { query, apikey } = req.query;
-    if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
     if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
     try {
         const result = await updateUsage(apikey);
@@ -552,8 +552,8 @@ router.get("/carigc", async (req, res) => {
 
 router.get("/soundcloud", async (req, res) => {
     const { query, apikey } = req.query;
-    if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
     if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
     try {
         const result = await updateUsage(apikey);
@@ -585,8 +585,8 @@ router.get("/soundcloud", async (req, res) => {
 
 router.get("/playstore", async (req, res) => {
     const { query, apikey } = req.query;
-    if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
     if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
     try {
         const result = await updateUsage(apikey);
@@ -628,8 +628,8 @@ router.get("/playstore", async (req, res) => {
 
 router.get("/happymod", async (req, res) => {
     const { query, apikey } = req.query;
-    if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
     if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
 
     try {
         const result = await updateUsage(apikey);
@@ -657,6 +657,23 @@ router.get("/happymod", async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Terjadi kesalahan saat mengambil data", error: error.message });
     }
+});
+
+router.get('/sticker', async (req, res) => {
+  const { query, apikey } = req.query;
+
+  if (!query) return res.status(400).json({ message: "Query pencarian diperlukan" });
+ if (!apikey) return res.status(400).json({ message: "API key diperlukan" });
+
+  try {
+    const result = await updateUsage(apikey);
+    if (!result.success) return res.status(403).json({ message: result.message });
+
+    const data = await stickerSearch(query);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Terjadi kesalahan server", error: error.message });
+  }
 });
 
 module.exports = router;
