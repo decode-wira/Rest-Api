@@ -59,7 +59,7 @@
       "email": "wbagazk@gmail.com",
       "phone": "089516174846",
       "apikey": "82a46349be05215ae9914f9856193c09",
-      "limit": 100,
+      "limit": 99,
       "plan": "basic",
       "planExpiresAt": null,
       "emailVerified": true,
@@ -67,7 +67,8 @@
       "isOwner": false,
       "createdAt": "2025-03-02T04:44:33.837Z",
       "otp": null,
-      "otpExpiration": null
+      "otpExpiration": null,
+      "lastReset": "2025-03-03"
     },
     {
       "id": "106e9101-e32e-484c-b7c2-9a12f6efc14f",
@@ -98,9 +99,9 @@
     "2025-02-25": 4,
     "2025-02-26": 2,
     "2025-03-02": 37,
-    "2025-03-03": 10
+    "2025-03-03": 11
   },
-  "count": 75,
+  "count": 76,
   "visitor": 244,
   "deposits": []
 }
