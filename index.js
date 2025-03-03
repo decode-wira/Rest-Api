@@ -558,34 +558,33 @@ app.get('/api/total-endpoints', (req, res) => {
 
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
 
-    setInterval(async () => {
-        const db = await getDatabase();
-        const today = new Date();
-        let needsUpdate = false;
+setInterval(async () => {
+    const db = await getDatabase();
+    const today = new Date();
+    let needsUpdate = false;
 
-        db.users = db.users.map(user => {
-            if (user.plan === 'owner' || user.status === 'owner') {
-                return user;
-            }
-
-            if (user.lastReset !== getTodayDate()) {
-                if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
-                    user.plan = 'basic';
-                    user.limit = PLANS.basic.limit;
-                    user.planExpiresAt = null;
-                } else {
-                    user.limit = PLANS[user.plan].limit;
-                }
-
-                user.lastReset = getTodayDate();
-                needsUpdate = true;
-            }
+    db.users = db.users.map(user => {
+        if (user.plan === 'owner' || user.status === 'owner') {
             return user;
-        });
-
-        if (needsUpdate) {
-            await saveDatabase(db);
-            console.log("Limit dan plan pengguna telah diriset");
         }
-    }, 86400000);
-}
+
+        if (user.lastReset !== getTodayDate()) {
+            if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
+                user.plan = 'basic';
+                user.limit = PLANS.basic.limit;
+                user.planExpiresAt = null;
+            } else {
+                user.limit = PLANS[user.plan].limit;
+            }
+
+            user.lastReset = getTodayDate();
+            needsUpdate = true;
+        }
+        return user;
+    });
+
+    if (needsUpdate) {
+        await saveDatabase(db);
+        console.log("Limit dan plan pengguna telah direset");
+    }
+}, 86400000);
