@@ -111,7 +111,6 @@ app.post("/api/register", databaseMiddleware, async (req, res) => {
     let otp = null;
     let otpExpiration = null;
 
-    // Hanya generate OTP untuk user non-owner
     if (!isFirstUser) {
       otp = generateOTP();
       otpExpiration = new Date(Date.now() + 15 * 60 * 1000);
@@ -127,7 +126,7 @@ app.post("/api/register", databaseMiddleware, async (req, res) => {
       limit: isFirstUser ? Number.MAX_SAFE_INTEGER : PLANS.basic.limit,
       plan: isFirstUser ? 'owner' : 'basic',
       planExpiresAt: null,
-      emailVerified: isFirstUser, // Owner langsung terverifikasi
+      emailVerified: isFirstUser, 
       isAdmin: isFirstUser,
       isOwner: isFirstUser,
       createdAt: new Date().toISOString(),
@@ -135,7 +134,6 @@ app.post("/api/register", databaseMiddleware, async (req, res) => {
       otpExpiration
     };
 
-    // Pengaturan email berdasarkan tipe user
     if (isFirstUser) {
       const mailOptions = {
         from: EMAIL_USER,
@@ -177,12 +175,10 @@ app.post("/api/verify-email", databaseMiddleware, async (req, res) => {
     return res.status(404).json({ message: "Email tidak ditemukan" });
   }
 
-  // Jika user adalah owner atau sudah terverifikasi
   if (user.emailVerified) {
     return res.status(400).json({ message: "Email sudah terverifikasi" });
   }
 
-  // Validasi OTP hanya untuk user non-owner
   if (!user.otp || !user.otpExpiration) {
     return res.status(400).json({ message: "OTP belum dikirim, silakan minta ulang" });
   }
@@ -203,7 +199,6 @@ app.post("/api/verify-email", databaseMiddleware, async (req, res) => {
   res.json({ message: "Email berhasil diverifikasi" });
 });
 
-// Endpoint untuk mengirim ulang OTP
 app.post("/api/resend-otp", databaseMiddleware, async (req, res) => {
   const { email } = req.body;
   const user = req.db.users.find(u => u.email === email);
@@ -542,6 +537,8 @@ app.get("/api/deposit/status/:id", async (req, res) => {
 // End Point
 app.use('/api/search', require('./api/search'));
 app.use('/api/download', require('./api/download'));
+app.use('/api/stalk', require('./api/stalk'));
+app.use('/api/tools', require('./api/tools'));
 
 app.get('/api/total-endpoints', (req, res) => {
     let total = 0;
@@ -557,26 +554,25 @@ app.get('/api/total-endpoints', (req, res) => {
 
 // == End Wak
 
-// Jika dijalankan secara langsung
 if (require.main === module) {
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
 
-    // Jadwal reset limit harian
     setInterval(async () => {
         const db = await getDatabase();
         const today = new Date();
         let needsUpdate = false;
 
         db.users = db.users.map(user => {
-            // Reset limit harian
+            if (user.plan === 'owner' || user.status === 'owner') {
+                return user;
+            }
+
             if (user.lastReset !== getTodayDate()) {
-                // Jika plan bukan basic dan sudah expired, downgrade ke basic
                 if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
                     user.plan = 'basic';
                     user.limit = PLANS.basic.limit;
                     user.planExpiresAt = null;
                 } else {
-                    // Reset limit sesuai plan
                     user.limit = PLANS[user.plan].limit;
                 }
 
@@ -588,7 +584,7 @@ if (require.main === module) {
 
         if (needsUpdate) {
             await saveDatabase(db);
-            console.log("Limit dan plan pengguna telah di-update");
+            console.log("Limit dan plan pengguna telah diriset");
         }
     }, 86400000);
 }
