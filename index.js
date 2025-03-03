@@ -540,6 +540,7 @@ app.use('/api/download', require('./api/download'));
 app.use('/api/stalk', require('./api/stalk'));
 app.use('/api/tools', require('./api/tools'));
 app.use('/api/maker', require('./api/maker'));
+app.use('/api/payment', require('./api/orkut'));
 
 app.get('/api/total-endpoints', (req, res) => {
     let total = 0;
