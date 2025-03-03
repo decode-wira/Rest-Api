@@ -553,6 +553,8 @@ app.get('/api/total-endpoints', (req, res) => {
     res.send(total.toString());
 });
 
+module.exports = app;
+
 // == End Wak
 
 if (require.main === module) {
