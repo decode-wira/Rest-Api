@@ -539,6 +539,7 @@ app.use('/api/search', require('./api/search'));
 app.use('/api/download', require('./api/download'));
 app.use('/api/stalk', require('./api/stalk'));
 app.use('/api/tools', require('./api/tools'));
+app.use('/api/maker', require('./api/maker'));
 
 app.get('/api/total-endpoints', (req, res) => {
     let total = 0;
