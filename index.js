@@ -554,11 +554,8 @@ app.get('/api/total-endpoints', (req, res) => {
     res.send(total.toString());
 });
 
-module.exports = app;
+// End Wak
 
-// == End Wak
-
-if (require.main === module) {
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
 
     setInterval(async () => {
