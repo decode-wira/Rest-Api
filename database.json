@@ -7,7 +7,7 @@
       "email": "tampanwira53@gmail.com",
       "phone": "083879152564",
       "apikey": "3afae5ac4512a8507afda661252bbe73",
-      "limit": 90,
+      "limit": 99,
       "plan": "owner",
       "planExpiresAt": null,
       "emailVerified": true,
@@ -16,7 +16,7 @@
       "createdAt": "2025-03-01T06:16:14.023Z",
       "otp": null,
       "otpExpiration": null,
-      "lastReset": "2025-03-03"
+      "lastReset": "2025-03-04"
     },
     {
       "id": "53361bf2-2c1a-4d93-b353-5fd9e348dffe",
@@ -99,9 +99,10 @@
     "2025-02-25": 4,
     "2025-02-26": 2,
     "2025-03-02": 37,
-    "2025-03-03": 11
+    "2025-03-03": 11,
+    "2025-03-04": 1
   },
-  "count": 76,
+  "count": 77,
   "visitor": 249,
   "deposits": []
 }
