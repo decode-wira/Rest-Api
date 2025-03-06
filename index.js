@@ -7,7 +7,6 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const { updateUsage, tambahPengunjung, databaseMiddleware, fetchGitHubFile, getDatabase, saveDatabase, authenticateToken, getTodayDate } = require('./lib/untils')
 require("dotenv").config();
-app.set("json spaces", 2);
 
 const app = express();
 app.use(express.json());
