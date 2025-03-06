@@ -10,6 +10,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+app.set("json spaces", 2);
 app.use(express.static("public"));
 
 const JWT_SECRET = "CALLLINE";
