@@ -2,7 +2,6 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
-app.set("json spaces", 2);
 const { updateUsage } = require('../lib/untils')
 
 const { BingImageSearch, searchWikipedia,

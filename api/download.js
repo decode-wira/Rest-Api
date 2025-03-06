@@ -3,7 +3,6 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
 const { updateUsage } = require('../lib/untils')
-app.set("json spaces", 2);
 const { downloadInstagram, terabox, capcutdl, douyindl, spotifydl, pindl, mediafiredl, GDrive, videydl } = require('../lib/function.js')
 
 router.get("/tiktok", async (req, res) => {

@@ -3,7 +3,6 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
 const { updateUsage } = require('../lib/untils')
-app.set("json spaces", 2);
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const { generateImageWithText } = require('../lib/function.js')
 
