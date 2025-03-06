@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
+app.set("json spaces", 2);
 const { updateUsage } = require('../lib/untils')
 
 const { BingImageSearch, searchWikipedia,
@@ -73,24 +74,46 @@ router.get('/images', async (req, res) => {
 });
 
 router.get('/pinterest', async (req, res) => {
-    const { query, apikey } = req.query;
+  const { query, limit, apikey } = req.query;
+  if (!apikey) {
+    return res.status(403).json({
+      status: false,
+      code: 403,
+      creator: "Hello Line",
+      result: { message: "API key diperlukan" },
+    });
+  }
+  
+  const result = await updateUsage(apikey);
+  if (!result.success) {
+    return res.status(403).json({ 
+      status: false,
+      code: 403,
+      creator: "Hello Line",
+      result: { message: result.message }
+    });
+  }
 
-    if (!query) return res.status(400).json({ error: 'Isi Parameter Query' });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const images = await pinterest(query);
-        if (images.length > 0) {
-            return res.json({ status: true, creator: "Hello Line", data: images });
-        } else {
-            return res.status(404).json({ status: false, creator: "Hello Line", message: 'No images found' });
-        }
-    } catch (error) {
-        return res.status(500).json({ status: false, creator: "Hello Line", error: error.message });
-    }
+  if (!query) {
+    return res.status(400).json({
+      status: false,
+      code: 400,
+      creator: "Hello Line",
+      result: { message: "Query parameter 'query' diperlukan" },
+    });
+  }
+  
+  try {
+    const result = await pinterest.search(query, limit || 30);
+    return res.json({ status: true, creator: "Hello Line", ...result });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      code: 500,
+      creator: "Hello Line",
+      result: { message: "Internal server error" },
+    });
+  }
 });
 
 router.get('/bingimg', async (req, res) => {

@@ -3,8 +3,11 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
 const { updateUsage } = require('../lib/untils')
+app.set("json spaces", 2);
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const { generateImageWithText } = require('../lib/function.js')
+
+registerFont('../fonts/fonts.ttf', { family: 'Agus' }); 
 
 router.get('/brat', async (req, res) => {
   const { text, apikey } = req.query;

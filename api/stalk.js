@@ -2,7 +2,9 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
+app.set("json spaces", 2);
 const { updateUsage } = require('../lib/untils')
+const { pinterest } = require('../lib/function.js')
 
 router.get("/igstalk", async (req, res) => {
     const { user, apikey } = req.query;
@@ -144,6 +146,49 @@ router.get("/github", async (req, res) => {
             error: error.message
         });
     }
+});
+
+router.get('/pinterest', async (req, res) => {
+  const { username, apikey } = req.query;
+  if (!apikey) {
+    return res.status(403).json({
+      status: false,
+      code: 403,
+      creator: "Hello Line",
+      result: { message: "API key diperlukan" },
+    });
+  }
+
+  const result = await updateUsage(apikey);
+  if (!result.success) {
+    return res.status(403).json({ 
+      status: false,
+      code: 403,
+      creator: "Hello Line",
+      result: { message: result.message }
+    });
+  }
+
+  if (!username) {
+    return res.status(400).json({
+      status: false,
+      code: 400,
+      creator: "Hello Line",
+      result: { message: "Parameter 'username' diperlukan" },
+    });
+  }
+  
+  try {
+    const result = await pinterest.profile(username);
+    return res.json({ status: true, creator: "Hello Line", ...result });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      code: 500,
+      creator: "Hello Line",
+      result: { message: "Internal server error" },
+    });
+  }
 });
 
 module.exports = router;
