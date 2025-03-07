@@ -11,7 +11,7 @@ const {
   generateQRIS,
   createQRIS,
   checkQRISStatus
-} = require('./orkut.js') 
+} = require('../orkut.js') 
 
 const validateApiKey = async (req, res, next) => {
   const apikey = req.query.apikey;
