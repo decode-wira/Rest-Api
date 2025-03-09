@@ -86,6 +86,23 @@
       "createdAt": "2025-03-03T11:40:51.766Z",
       "otp": null,
       "otpExpiration": null
+    },
+    {
+      "id": "c1f8a48c-fa4b-43bf-9a5c-45d5d2bd49b5",
+      "username": "Wannhosting",
+      "password": "$2a$10$/FTaYl5ohf7lZiB1V5Y2heLF9gSsS5Yxyxj1qJzrmCyrk9ph2RYQW",
+      "email": "wannhosting@gmail.com",
+      "phone": "0882022066260",
+      "apikey": "b2d095622480071159643aec9bbbfed0",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-03-09T16:32:33.114Z",
+      "otp": "903747",
+      "otpExpiration": "2025-03-09T16:47:33.113Z"
     }
   ],
   "historyRequest": {
