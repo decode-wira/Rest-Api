@@ -32,6 +32,42 @@ router.get('/brat', async (req, res) => {
   }
 });
 
+router.get('/brat2', async (req, res) => {
+  const { text, apikey, isVideo, delay } = req.query;
+
+  if (!text) {
+    return res.status(400).json({ error: 'Parameter "text" wajib disertakan.' });
+  }
+
+  if (!apikey) {
+    return res.status(401).json({ error: 'API key diperlukan.' });
+  }
+
+  try {
+    const result = await updateUsage(apikey);
+    if (!result.success) {
+      return res.status(403).json({ message: result.message });
+    }
+
+    // Jika isVideo true, maka buat video
+    if (isVideo && isVideo === 'true') {
+      // Mengubah delay ke integer, jika tidak ada atau tidak valid maka default ke 0
+      const videoDelay = parseInt(delay, 10) || 0;
+      const videoBuffer = await generateVideoWithText(text, videoDelay);
+      res.setHeader('Content-Type', 'video/mp4');
+      return res.end(videoBuffer);
+    } else {
+      // Jika tidak, buat gambar
+      const imageBuffer = await generateImageWithText(text);
+      res.setHeader('Content-Type', 'image/png');
+      return res.end(imageBuffer);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Terjadi kesalahan saat membuat gambar/video.' });
+  }
+});
+
 router.get('/brats', async (req, res) => {
     const { teks, apikey } = req.query;
     
@@ -59,7 +95,7 @@ router.get('/brats', async (req, res) => {
         const paper_height = img.height * 0.32;
 
         let font_size = Math.min(paper_width / 7.5, paper_height / 3.5);
-        ctx.font = `${font_size}px Agus`;
+        ctx.font = `${font_size}px MyFont`;
         ctx.fillStyle = 'black';
 
         const max_width = paper_width * 0.88;
@@ -82,7 +118,7 @@ router.get('/brats', async (req, res) => {
 
         while (lines.length * font_size > paper_height * 0.85) {
             font_size -= 2;
-            ctx.font = `${font_size}px Agus`;
+            ctx.font = `${font_size}px MyFont`;
 
             let tmp_lines = [];
             let tmp_line = '';
