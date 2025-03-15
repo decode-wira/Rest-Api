@@ -542,6 +542,7 @@ app.use('/api/tools', require('./api/tools'));
 app.use('/api/maker', require('./api/maker'));
 app.use('/api/anime', require('./api/anime'));
 app.use('/api/pay', require('./api/orkut'));
+app.use('/api/panel', require('./api/ptreo'));
 
 app.get('/api/total-endpoints', (req, res) => {
     let total = 0;
