@@ -112,7 +112,7 @@ router.get('/okt-deposit', async (req, res) => {
       });
     }
     try {
-        const qrData = await createQRIS(amount, code);
+        const qrData = await createQRIS(amount, qrcode);
         res.json({ 
             status: true,
             creator: creator,
