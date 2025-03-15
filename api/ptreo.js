@@ -13,16 +13,18 @@ const egg = 15;
 const location = 1;
 
 router.get("/ptero", async (req, res) => {
-    const { domain, apikey, username, password, ram, disk, cpu } = req.query;
+    const { domain, apikey, username, ram, disk, cpu } = req.query;
 
-    if (!domain || !apikey || !username || !password || !ram || !disk || !cpu) {
+    if (!domain || !apikey || !username || !ram || !disk || !cpu) {
         return res.status(400).json({ error: "Semua parameter wajib diisi!" });
     }
 
     try {
         const email = `${username}@gmail.com`;
         const name = kapital(username) + "123";
+        const password = `${username}123`; // Buat password otomatis
 
+        // Buat user di Pterodactyl
         let userResponse = await fetch(`${domain}/api/application/users`, {
             method: "POST",
             headers: {
@@ -36,7 +38,7 @@ router.get("/ptero", async (req, res) => {
                 first_name: name,
                 last_name: "LinexCloud",
                 language: "en",
-                password,
+                password, 
             }),
         });
 
@@ -48,27 +50,27 @@ router.get("/ptero", async (req, res) => {
         let user = userData.attributes;
         let usr_id = user.id;
 
-        // Mendapatkan startup command dari egg
-        // Mendapatkan startup command dari egg
-       let eggResponse = await fetch(`${domain}/api/application/nests/5/eggs/${egg}`, {
-        method: "GET",
-        headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apikey}`,
-    },
-});
+        // Ambil startup command dari egg
+        let eggResponse = await fetch(`${domain}/api/application/nests/5/eggs/${egg}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apikey}`,
+            },
+        });
 
         let eggData = await eggResponse.json();
 
         console.log("Egg Response:", JSON.stringify(eggData, null, 2));
 
         if (!eggData || !eggData.attributes || !eggData.attributes.startup) {
-    return res.status(500).json({ error: "Gagal mendapatkan startup command dari egg!" });
-}
+            return res.status(500).json({ error: "Gagal mendapatkan startup command dari egg!" });
+        }
 
-       let startup_cmd = eggData.attributes.startup;
-        
+        let startup_cmd = eggData.attributes.startup;
+
+        // Buat server di Pterodactyl
         let serverResponse = await fetch(`${domain}/api/application/servers`, {
             method: "POST",
             headers: {
@@ -120,7 +122,7 @@ router.get("/ptero", async (req, res) => {
             message: "Panel account dan server berhasil dibuat!",
             server_id: server.id,
             username,
-            password,
+            password, // Password otomatis dikembalikan ke respons
             login_url: domain,
             ram: ram === "0" ? "Unlimited" : `${ram}MB`,
             cpu: cpu === "0" ? "Unlimited" : `${cpu}%`,
