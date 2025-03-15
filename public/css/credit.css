@@ -1,0 +1,156 @@
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+background: linear-gradient(135deg, #1a1a2e, #16213e);
+min-height: 100vh;
+color: #fff;
+overflow-x: hidden;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem;
+}
+
+.header {
+text-align: center;
+margin-bottom: 4rem;
+position: relative;
+}
+
+.header h1 {
+font-size: 4rem;
+background: linear-gradient(45deg, #00b4d8, #90e0ef);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow: 0 0 20px rgba(144, 224, 239, 0.3);
+animation: fadeIn 1s ease-in;
+}
+
+.team-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+padding: 1rem;
+}
+
+.member-card {
+background: rgba(255, 255, 255, 0.05);
+backdrop-filter: blur(10px);
+border-radius: 15px;
+padding: 2rem;
+text-align: center;
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
+}
+
+.member-card:hover {
+transform: translateY(-10px);
+box-shadow: 0 10px 30px rgba(0, 180, 216, 0.3);
+}
+
+.member-card::before {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: linear-gradient(45deg, transparent, #00b4d8, transparent);
+transform: rotate(45deg);
+transition: all 0.5s;
+}
+
+.member-card:hover::before {
+animation: borderEffect 2s linear infinite;
+}
+
+.profile-img {
+width: 150px;
+height: 150px;
+border-radius: 50%;
+margin: 0 auto 1rem;
+border: 3px solid #00b4d8;
+object-fit: cover;
+transition: all 0.3s ease;
+}
+
+.member-card:hover .profile-img {
+transform: scale(1.05);
+box-shadow: 0 0 20px #00b4d8;
+}
+
+.member-name {
+font-size: 1.5rem;
+margin-bottom: 0.5rem;
+color: #90e0ef;
+}
+
+.member-role {
+color: #a8dadc;
+margin-bottom: 1rem;
+}
+
+.social-links {
+display: flex;
+justify-content: center;
+gap: 1rem;
+}
+
+.social-links a {
+color: #fff;
+font-size: 1.5rem;
+transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+color: #00b4d8;
+transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(-20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+@keyframes borderEffect {
+0% {
+transform: rotate(45deg) translateX(-50%);
+}
+100% {
+transform: rotate(45deg) translateX(50%);
+}
+}
+
+.deco-circle {
+position: fixed;
+width: 300px;
+height: 300px;
+background: radial-gradient(circle, rgba(0,180,216,0.2) 0%, transparent 70%);
+border-radius: 50%;
+pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+.header h1 {
+font-size: 2.5rem;
+}
+
+.team-grid {
+grid-template-columns: 1fr;
+}
+}

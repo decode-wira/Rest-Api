@@ -1,0 +1,315 @@
+:root {
+  --primary: #4361ee;
+  --primary-hover: #3a0ca3;
+  --success: #06d6a0;
+  --danger: #ef476f;
+  --dark: #2b2d42;
+  --light: #f8f9fa;
+  --gray: #6c757d;
+  --border: #e9ecef;
+  --shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  padding: 1rem;
+}
+
+.verification-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 480px;
+  transform: translateY(0);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.verification-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(67, 97, 238, 0.1), transparent);
+  transform: rotate(-15deg);
+  z-index: 1;
+}
+
+.verification-card:hover {
+  transform: translateY(-8px);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.logo img {
+  height: 80px;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover img {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+h2 {
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--gray);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.75rem;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+}
+
+input:focus ~ .input-icon {
+  color: var(--primary);
+}
+
+.otp-inputs {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.otp-input {
+  text-align: center;
+  padding: 0.8rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.otp-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+  outline: none;
+}
+
+.error-message {
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-message i {
+  font-size: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: rotate(-45deg);
+  transition: transform 0.5s ease;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+button:hover::after {
+  transform: rotate(45deg) translateX(50%);
+}
+
+button:disabled {
+  background: var(--border);
+  cursor: not-allowed;
+}
+
+.resend-otp {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--dark);
+  font-size: 0.95rem;
+  position: relative;
+  z-index: 2;
+}
+
+.resend-otp a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.resend-otp a:hover {
+  color: var(--primary-hover);
+  transform: translateX(4px);
+}
+
+.resend-otp a:disabled {
+  color: var(--gray);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.success-message {
+  background: var(--success);
+  color: white;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  animation: slideIn 0.5s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.success-message i {
+  font-size: 1.5rem;
+  animation: bounce 1s infinite;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: rotation 1s linear infinite;
+  display: none;
+}
+
+@keyframes rotation {
+  100% { transform: rotate(360deg) }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0 }
+  to { transform: translateY(0); opacity: 1 }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+}
+
+@media (max-width: 480px) {
+  .verification-card {
+padding: 1.75rem;
+border-radius: 1rem;
+  }
+
+  .otp-inputs {
+grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow);
+  animation: slideIn 0.3s ease;
+}
+
+.toast.success {
+  border-left: 4px solid var(--success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--danger);
+}
+
+.toast i {
+  font-size: 1.5rem;
+}
+
+.toast.success i { color: var(--success) }
+.toast.error i { color: var(--danger) }
