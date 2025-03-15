@@ -12,7 +12,7 @@ function kapital(str) {
 const egg = 15; 
 const location = 1;
 
-app.get("/ptero", async (req, res) => {
+router.get("/ptero", async (req, res) => {
     const { domain, apikey, username, password, ram, disk, cpu } = req.query;
 
     if (!domain || !apikey || !username || !password || !ram || !disk || !cpu) {
