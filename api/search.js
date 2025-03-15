@@ -698,4 +698,38 @@ router.get('/sticker', async (req, res) => {
   }
 });
 
+router.get('/modcombo', async (req, res) => {
+  const query = req.query.query;
+  if (!query) {
+    return res.status(400).json({ error: 'Parameter "query" diperlukan' });
+  }
+
+  try {
+    const url = `https://modcombo.com/id/?s=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(url, { headers });
+    const $ = cheerio.load(data);
+
+    let results = [];
+
+    $('li a.blog.search').each((_, el) => {
+      const image = $(el).find('figure img').attr('data-src') || $(el).find('figure img').attr('src');
+      const title = $(el).find('.title').text().trim();
+      const link = $(el).attr('href');
+
+      if (image && title && link) {
+        results.push({
+          title,
+          image: image.startsWith('//') ? 'https:' + image : image,
+          link
+        });
+      }
+    });
+
+    res.json({ query, results });
+  } catch (error) {
+    console.error('Error saat pencarian mod:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan saat mencari mod' });
+  }
+});
+
 module.exports = router;

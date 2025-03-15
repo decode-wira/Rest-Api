@@ -3,7 +3,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const router = express.Router();
 const { updateUsage } = require('../lib/untils')
-const { processImage, CatBox, cekPesanMail, createAccountMail, getTokenMail } = require('../lib/function.js')
+const { processImage, CatBox } = require('../lib/function.js')
 
 router.get('/ssweb', async (req, res) => {
     const { url, apikey } = req.query;
@@ -80,57 +80,6 @@ router.get('/cekip', async (req, res) => {
         res.json({ status: true, creator: "Hello Line", data: response.data });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error.', detail: error.message });
-    }
-});
-
-router.get('/createmail', async (req, res) => {
-    const { namePrefix, apikey } = req.query;
-
-    if (!namePrefix) return res.status(400).json({ error: "Parameter 'namePrefix' diperlukan." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const account = await createAccountMail(namePrefix);
-        res.json({ status: true, creator: "Hello Line", data: account });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-router.get('/gettokenmail', async (req, res) => {
-    const { email, password, apikey } = req.query;
-
-    if (!email || !password) return res.status(400).json({ error: "Parameter 'email' dan 'password' diperlukan." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const token = await getTokenMail(email, password);
-        res.json({ status: true, creator: "Hello Line", data: { token } });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
-    }
-});
-
-router.get('/cekpesanmail', async (req, res) => {
-    const { token, apikey } = req.query;
-
-    if (!token) return res.status(400).json({ error: "Parameter 'token' diperlukan." });
-    if (!apikey) return res.status(401).json({ error: 'API key diperlukan.' });
-
-    const result = await updateUsage(apikey);
-    if (!result.success) return res.status(403).json({ message: result.message });
-
-    try {
-        const messages = await cekPesanMail(token);
-        res.json({ status: true, creator: "Hello Line", data: messages });
-    } catch (error) {
-        res.status(500).json({ status: false, error: error.message });
     }
 });
 
