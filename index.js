@@ -10,7 +10,6 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.set("json spaces", 2);
 app.use(express.static("public"));
 
 const JWT_SECRET = "CALLLINE";
@@ -541,7 +540,8 @@ app.use('/api/download', require('./api/download'));
 app.use('/api/stalk', require('./api/stalk'));
 app.use('/api/tools', require('./api/tools'));
 app.use('/api/maker', require('./api/maker'));
-app.use('/api/payment', require('./api/orkut'));
+app.use('/api/anime', require('./api/anime'));
+app.use('/api/pay', require('./api/orkut'));
 
 app.get('/api/total-endpoints', (req, res) => {
     let total = 0;
@@ -555,37 +555,39 @@ app.get('/api/total-endpoints', (req, res) => {
     res.send(total.toString());
 });
 
-// End Wak
+// == End Wak
 
+if (require.main === module) {
     app.listen(3000, () => console.log("Server berjalan di port 3000"));
 
-setInterval(async () => {
-    const db = await getDatabase();
-    const today = new Date();
-    let needsUpdate = false;
+    setInterval(async () => {
+        const db = await getDatabase();
+        const today = new Date();
+        let needsUpdate = false;
 
-    db.users = db.users.map(user => {
-        if (user.plan === 'owner' || user.status === 'owner') {
-            return user;
-        }
-
-        if (user.lastReset !== getTodayDate()) {
-            if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
-                user.plan = 'basic';
-                user.limit = PLANS.basic.limit;
-                user.planExpiresAt = null;
-            } else {
-                user.limit = PLANS[user.plan].limit;
+        db.users = db.users.map(user => {
+            if (user.plan === 'owner' || user.status === 'owner') {
+                return user;
             }
 
-            user.lastReset = getTodayDate();
-            needsUpdate = true;
-        }
-        return user;
-    });
+            if (user.lastReset !== getTodayDate()) {
+                if (user.plan !== 'basic' && new Date(user.planExpiresAt) < today) {
+                    user.plan = 'basic';
+                    user.limit = PLANS.basic.limit;
+                    user.planExpiresAt = null;
+                } else {
+                    user.limit = PLANS[user.plan].limit;
+                }
 
-    if (needsUpdate) {
-        await saveDatabase(db);
-        console.log("Limit dan plan pengguna telah direset");
-    }
-}, 86400000);
+                user.lastReset = getTodayDate();
+                needsUpdate = true;
+            }
+            return user;
+        });
+
+        if (needsUpdate) {
+            await saveDatabase(db);
+            console.log("Limit dan plan pengguna telah diriset");
+        }
+    }, 86400000);
+}
