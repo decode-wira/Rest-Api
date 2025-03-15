@@ -1,6 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const fetch = require('node-fetch').default;
+const fetch = require('node-fetch');
 const router = express.Router();
 const { updateUsage } = require('../lib/untils')
 
