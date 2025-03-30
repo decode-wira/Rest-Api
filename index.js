@@ -28,8 +28,7 @@ const transporter = nodemailer.createTransport({
 const PLANS = {
   basic: { limit: 100, duration: null },
   standard: { limit: 500, duration: 15 },
-  premium: { limit: 1500, duration: 30 },
-  owner: { limit: null, duration: null }
+  premium: { limit: 1500, duration: 30 }
 };
 
 function generateOTP() {
