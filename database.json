@@ -131,12 +131,12 @@
       "limit": 100,
       "plan": "basic",
       "planExpiresAt": null,
-      "emailVerified": false,
+      "emailVerified": true,
       "isAdmin": false,
       "isOwner": false,
       "createdAt": "2025-04-10T08:28:04.045Z",
-      "otp": "824841",
-      "otpExpiration": "2025-04-10T08:43:04.045Z"
+      "otp": null,
+      "otpExpiration": null
     }
   ],
   "historyRequest": {
