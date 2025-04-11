@@ -138,6 +138,23 @@
       "otp": null,
       "otpExpiration": null,
       "lastReset": "2025-04-11"
+    },
+    {
+      "id": "d3b260c4-3093-4cce-a91b-ee0ee5d2ccbd",
+      "username": "haya67",
+      "password": "$2a$10$hPBJ/Jnnh1.hzZEHPwmcbOwr0g9kvTBeZPfsS1k.9cqB7O/zFwgyG",
+      "email": "dies.irae505@gmail.com",
+      "phone": "087840530026",
+      "apikey": "1bc990afdf59007b0ff0f56de82425dd",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-04-11T20:24:52.989Z",
+      "otp": "572020",
+      "otpExpiration": "2025-04-11T20:39:52.988Z"
     }
   ],
   "historyRequest": {
