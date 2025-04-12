@@ -121,7 +121,7 @@ let countdownActive = false;
   // Tambahkan redirect jika loading selesai (false)
   if (!loading) {
     // Ganti 'dashboard.html' sesuai tujuan
-    window.location.href = 'dashboard.html';
+    window.location.href = 'login.html';
   }
     }
 
