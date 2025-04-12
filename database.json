@@ -155,6 +155,23 @@
       "createdAt": "2025-04-11T20:24:52.989Z",
       "otp": "966619",
       "otpExpiration": "2025-04-11T20:40:09.181Z"
+    },
+    {
+      "id": "e60f86a5-f6a0-4e63-836c-4bca2febb30d",
+      "username": "Wira pantek",
+      "password": "$2a$10$TgAqg3/qZ4GAcg.nZuc/.emONMbIA1IZH5aRFf52BcM2lBGdO437C",
+      "email": "wiraliwirya@gmail.com",
+      "phone": "083879152563",
+      "apikey": "04f83f68e000b9e7e268712ec77bdc41",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-04-12T03:09:50.227Z",
+      "otp": "362128",
+      "otpExpiration": "2025-04-12T03:24:50.227Z"
     }
   ],
   "historyRequest": {
