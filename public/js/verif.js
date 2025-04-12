@@ -113,10 +113,16 @@ let countdownActive = false;
     }
 
     function showLoading(loading) {
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = loading;
-      document.getElementById('loader').style.display = loading ? 'block' : 'none';
-      submitBtn.querySelector('span').style.display = loading ? 'none' : 'block';
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = loading;
+  document.getElementById('loader').style.display = loading ? 'block' : 'none';
+  submitBtn.querySelector('span').style.display = loading ? 'none' : 'block';
+
+  // Tambahkan redirect jika loading selesai (false)
+  if (!loading) {
+    // Ganti 'dashboard.html' sesuai tujuan
+    window.location.href = 'dashboard.html';
+  }
     }
 
     function showError(elementId, message) {
