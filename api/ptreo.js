@@ -36,7 +36,7 @@ router.get("/ptero", async (req, res) => {
                 email,
                 username,
                 first_name: name,
-                last_name: "LinexCloud",
+                last_name: name,
                 language: "en",
                 password, 
             }),
