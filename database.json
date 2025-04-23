@@ -189,6 +189,23 @@
       "createdAt": "2025-04-12T21:00:37.505Z",
       "otp": "378635",
       "otpExpiration": "2025-04-12T21:15:37.504Z"
+    },
+    {
+      "id": "edd13819-9717-4fae-a73e-936228dae5d7",
+      "username": "moontech",
+      "password": "$2a$10$YHWpFHTDa6yKJqivV.HTjexMl3wfavosgniPWhpMKnjCUP8Y/l3ZS",
+      "email": "putzzdragons@gmail.com",
+      "phone": "085693403858",
+      "apikey": "c44ca2106812f8d7dae836fce2e71837",
+      "limit": 100,
+      "plan": "basic",
+      "planExpiresAt": null,
+      "emailVerified": false,
+      "isAdmin": false,
+      "isOwner": false,
+      "createdAt": "2025-04-23T22:30:25.965Z",
+      "otp": "644093",
+      "otpExpiration": "2025-04-23T22:45:25.965Z"
     }
   ],
   "historyRequest": {
