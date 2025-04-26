@@ -128,7 +128,7 @@
       "email": "mail.mts4youxd425@gmail.com",
       "phone": "089513452027",
       "apikey": "7700ea7d87aaf986f7a2293262b21560",
-      "limit": 1e+21,
+      "limit": 99,
       "plan": "basic",
       "planExpiresAt": null,
       "emailVerified": true,
@@ -137,7 +137,7 @@
       "createdAt": "2025-04-10T08:28:04.045Z",
       "otp": null,
       "otpExpiration": null,
-      "lastReset": "2025-04-25"
+      "lastReset": "2025-04-26"
     },
     {
       "id": "d3b260c4-3093-4cce-a91b-ee0ee5d2ccbd",
@@ -254,9 +254,9 @@
     "2025-04-23": 64,
     "2025-04-24": 99,
     "2025-04-25": 116,
-    "2025-04-26": 3
+    "2025-04-26": 4
   },
-  "count": 1233,
+  "count": 1234,
   "visitor": 303,
   "deposits": []
 }
