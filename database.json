@@ -128,7 +128,7 @@
       "email": "mail.mts4youxd425@gmail.com",
       "phone": "089513452027",
       "apikey": "7700ea7d87aaf986f7a2293262b21560",
-      "limit": 98,
+      "limit": 97,
       "plan": "basic",
       "planExpiresAt": null,
       "emailVerified": true,
@@ -257,9 +257,9 @@
     "2025-04-26": 192,
     "2025-04-27": 102,
     "2025-04-28": 100,
-    "2025-04-29": 2
+    "2025-04-29": 3
   },
-  "count": 1626,
+  "count": 1627,
   "visitor": 306,
   "deposits": []
 }
