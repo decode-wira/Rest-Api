@@ -7,7 +7,7 @@
       "email": "tampanwira53@gmail.com",
       "phone": "083879152564",
       "apikey": "3afae5ac4512a8507afda661252bbe73",
-      "limit": 89,
+      "limit": 88,
       "plan": "owner",
       "planExpiresAt": null,
       "emailVerified": true,
@@ -264,9 +264,9 @@
     "2025-05-03": 64,
     "2025-05-04": 100,
     "2025-05-07": 5,
-    "2025-05-08": 11
+    "2025-05-08": 12
   },
-  "count": 2278,
+  "count": 2279,
   "visitor": 308,
   "deposits": []
 }
